@@ -21,12 +21,15 @@
     .nav-link:after { content: ''; position: absolute; width: 0; height: 2px; bottom: -2px; right: 0; background-color: #2563eb; transition: width 0.2s; }
     .nav-link:hover:after { width: 100%; }
     .mobile-menu { transition: all 0.2s ease; }
-    /* Scanner: reliable viewport for real QR detection */
-    #qr-reader { min-height: 280px !important; width: 100% !important; position: relative; }
+    /* Scanner: visible guide frame + reliable detection */
+    #qr-reader { min-height: 320px !important; width: 100% !important; position: relative; }
     #qr-reader__scan_region { width: 100% !important; }
     #qr-reader__scan_region video { width: 100% !important; height: auto !important; max-height: 70vh; object-fit: cover; }
     #qr-reader__dashboard { display: none !important; }
+    #qr-reader__scan_region img { display: none !important; }
     .scan-status { transition: opacity 0.2s; }
+    /* Visible guide frame (library draws qrbox; ensure it stands out) */
+    #qr-reader [id$="__scan_region"] canvas { border-radius: 8px; }
   </style>
 </head>
 <body class="text-gray-800 antialiased" dir="rtl">
@@ -365,17 +368,31 @@
   <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
   <script>
     (function() {
+      'use strict';
       if (typeof window.MAWTHOOQ_PRODUCTS === 'undefined') window.MAWTHOOQ_PRODUCTS = {};
-      let qrScanner = null;
-      const readerEl = document.getElementById('qr-reader');
-      const resultEl = document.getElementById('scan-result');
-      const resultProductEl = document.getElementById('scan-result-product');
-      const resultRawEl = document.getElementById('scan-result-raw');
-      const resultText = document.getElementById('scan-result-text');
-      const scanAgainBtn = document.getElementById('scan-again-btn');
-      const errorEl = document.getElementById('scan-error');
-      const errorMsgEl = document.getElementById('scan-error-msg');
-      const scanStatusEl = document.getElementById('scan-status');
+
+      var qrScanner = null;
+      var lastDecodedAt = 0;
+      var DECODE_COOLDOWN_MS = 2000;
+
+      var readerEl = document.getElementById('qr-reader');
+      var resultEl = document.getElementById('scan-result');
+      var resultProductEl = document.getElementById('scan-result-product');
+      var resultRawEl = document.getElementById('scan-result-raw');
+      var resultText = document.getElementById('scan-result-text');
+      var scanAgainBtn = document.getElementById('scan-again-btn');
+      var errorEl = document.getElementById('scan-error');
+      var errorMsgEl = document.getElementById('scan-error-msg');
+      var scanStatusEl = document.getElementById('scan-status');
+
+      // html5-qrcode config: optimized for real printed QR detection
+      var SCANNER_CONFIG = {
+        fps: 20,
+        disableFlip: false,
+        rememberLastUsedCamera: true,
+        qrbox: { width: 300, height: 300 },
+        aspectRatio: 1.0
+      };
 
       function getProductFromDecodedText(decodedText) {
         var t = (decodedText || '').trim();
@@ -409,17 +426,20 @@
           safetyLabel + brand + desc + ing + warn + batch + instructions + '</div>';
       }
 
-      var lastDecodedAt = 0;
-      function showResult(decodedText) {
+      function onScanSuccess(decodedText) {
         if (!decodedText || !decodedText.trim()) return;
         var now = Date.now();
-        if (now - lastDecodedAt < 2500) return;
+        if (now - lastDecodedAt < DECODE_COOLDOWN_MS) return;
         lastDecodedAt = now;
+
+        console.log('[Mawthooq QR] Decoded:', decodedText);
+
         if (scanStatusEl) scanStatusEl.style.display = 'none';
-        var product = getProductFromDecodedText(decodedText);
         resultEl.classList.remove('hidden');
         errorEl.classList.add('hidden');
         if (qrScanner && qrScanner.isScanning()) qrScanner.stop().catch(function() {});
+
+        var product = getProductFromDecodedText(decodedText);
         if (product) {
           resultProductEl.innerHTML = renderProductCard(product);
           resultProductEl.classList.remove('hidden');
@@ -437,67 +457,71 @@
         if (scanStatusEl) scanStatusEl.style.display = 'none';
       }
 
-      function hideError() {
-        errorEl.classList.add('hidden');
-      }
-
       function setScanningStatus(show) {
         if (scanStatusEl) scanStatusEl.style.display = show ? 'block' : 'none';
       }
 
-      var config = {
-        fps: 12,
-        disableFlip: false,
-        aspectRatio: 1.333
-      };
-
-      function doStart(cameraIdOrConfig) {
-        return qrScanner.start(cameraIdOrConfig, config, showResult, function() {});
+      function getBackCameraId(cameras) {
+        if (!cameras || !cameras.length) return null;
+        var back = cameras.find(function(c) {
+          var label = (c.label || '').toLowerCase();
+          return label.indexOf('back') >= 0 || label.indexOf('rear') >= 0 || label.indexOf('environment') >= 0 || label.indexOf('خلف') >= 0;
+        });
+        return back ? back.id : cameras[0].id;
       }
 
       function startWithCamera() {
+        var Html5Qrcode = window.Html5Qrcode;
         Html5Qrcode.getCameras().then(function(cameras) {
           if (!cameras || cameras.length === 0) {
             showError('لم يتم العثور على كاميرا. تأكد من الاتصال أو الصلاحيات.');
             return;
           }
-          var back = cameras.find(function(c) { return c.label && (c.label.toLowerCase().indexOf('back') >= 0 || c.label.indexOf('خلف') >= 0); });
-          var cam = back || cameras[0];
-          doStart(cam.id).then(function() {}).catch(function(err) {
-            doStart({ facingMode: 'environment' }).catch(function(err2) {
-              doStart(cameras[0].id).catch(function(err3) {
-                var m = (err && err.message) || (err2 && err2.message) || (err3 && err3.message) || '';
-                if (m.indexOf('Permission') >= 0 || m.indexOf('NotAllowed') >= 0) showError('تم رفض صلاحية الكاميرا. يرجى السماح للموقع بالوصول إلى الكاميرا من إعدادات المتصفح.');
-                else if (m.indexOf('NotFound') >= 0) showError('لم يتم العثور على كاميرا.');
-                else showError('تعذّر تشغيل الكاميرا: ' + (m || 'جرّب متصفحاً آخر.'));
-              });
+          var backId = getBackCameraId(cameras);
+          qrScanner.start(backId, SCANNER_CONFIG, onScanSuccess, function() {})
+            .then(function() {})
+            .catch(function(err) {
+              qrScanner.start({ facingMode: 'environment' }, SCANNER_CONFIG, onScanSuccess, function() {})
+                .then(function() {})
+                .catch(function(err2) {
+                  qrScanner.start(cameras[0].id, SCANNER_CONFIG, onScanSuccess, function() {})
+                    .then(function() {})
+                    .catch(function(err3) {
+                      var m = (err && err.message) || (err2 && err2.message) || (err3 && err3.message) || '';
+                      if (m.indexOf('Permission') >= 0 || m.indexOf('NotAllowed') >= 0) showError('تم رفض صلاحية الكاميرا. يرجى السماح للموقع بالوصول إلى الكاميرا من إعدادات المتصفح.');
+                      else if (m.indexOf('NotFound') >= 0) showError('لم يتم العثور على كاميرا.');
+                      else showError('تعذّر تشغيل الكاميرا: ' + (m || 'جرّب متصفحاً آخر (Chrome / Edge).'));
+                    });
+                });
             });
-          });
         }).catch(function() {
-          doStart({ facingMode: 'environment' }).catch(function() {
-            showError('تعذّر الوصول للكاميرا. تأكد من منح الصلاحية أو استخدم HTTPS.');
-          });
+          qrScanner.start({ facingMode: 'environment' }, SCANNER_CONFIG, onScanSuccess, function() {})
+            .then(function() {})
+            .catch(function() { showError('تعذّر الوصول للكاميرا. تأكد من منح الصلاحية أو استخدم HTTPS.'); });
         });
       }
 
       function startScanner() {
         if (qrScanner && qrScanner.isScanning()) return;
         resultEl.classList.add('hidden');
-        hideError();
+        errorEl.classList.add('hidden');
         setScanningStatus(true);
         if (!window.Html5Qrcode) {
           showError('لم يتم تحميل مكتبة المسح. تحقق من الاتصال بالإنترنت.');
           return;
         }
-        readerEl.style.minHeight = '280px';
+        readerEl.style.minHeight = '320px';
+
         if (qrScanner) {
           startWithCamera();
           return;
         }
+
         var scannerOpts = {};
         if (typeof Html5QrcodeSupportedFormats !== 'undefined') scannerOpts.formatsToSupport = [Html5QrcodeSupportedFormats.QR_CODE];
         else if (window.Html5QrcodeSupportedFormats) scannerOpts.formatsToSupport = [window.Html5QrcodeSupportedFormats.QR_CODE];
         else scannerOpts.formatsToSupport = [0];
+
         qrScanner = new Html5Qrcode('qr-reader', scannerOpts);
         startWithCamera();
       }
@@ -512,17 +536,15 @@
         startScanner();
       });
 
-      // بدء المسح تلقائياً عند الوصول لقسم المسح (تأخير بسيط لاكتمال الأبعاد)
-      const scanSection = document.getElementById('scan');
-      const observer = new IntersectionObserver(function(entries) {
+      var scanSection = document.getElementById('scan');
+      var observer = new IntersectionObserver(function(entries) {
         entries.forEach(function(entry) {
-          if (entry.isIntersecting) setTimeout(startScanner, 150);
+          if (entry.isIntersecting) setTimeout(startScanner, 200);
           else stopScanner();
         });
-      }, { threshold: 0.3 });
+      }, { threshold: 0.25 });
       observer.observe(scanSection);
 
-      // إذا كان الرابط يحتوي #scan نبدأ بعد اكتمال الرسم
       if (window.location.hash === '#scan') setTimeout(startScanner, 400);
     })();
   </script>
