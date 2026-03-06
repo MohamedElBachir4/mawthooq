@@ -21,13 +21,11 @@
     .nav-link:after { content: ''; position: absolute; width: 0; height: 2px; bottom: -2px; right: 0; background-color: #2563eb; transition: width 0.2s; }
     .nav-link:hover:after { width: 100%; }
     .mobile-menu { transition: all 0.2s ease; }
-    /* Scanner: full-frame decoding (لا نحدد qrbox لمسح كامل الإطار) */
-    #qr-reader { min-height: 320px !important; width: 100% !important; position: relative; }
-    #qr-reader__scan_region { width: 100% !important; }
-    #qr-reader__scan_region video { width: 100% !important; height: auto !important; max-height: 70vh; object-fit: contain; }
-    #qr-reader__dashboard { display: none !important; }
+    /* Scanner: فيديو + jsQR (متوافق مع iPhone و Safari) */
+    #qr-reader { min-height: 320px !important; width: 100% !important; position: relative; background: #000; }
+    #qr-video { width: 100% !important; height: auto !important; max-height: 70vh; object-fit: cover; display: block; }
+    #qr-canvas { display: none; }
     .scan-status { transition: opacity 0.2s; }
-    /* إطار توجيه بصري فقط (لا يؤثر على فك الترميز) */
     .scanner-guide { position: absolute; inset: 50%; transform: translate(-50%, -50%); width: 260px; height: 260px; border: 3px solid rgba(255,255,255,0.7); border-radius: 16px; pointer-events: none; box-shadow: 0 0 0 9999px rgba(0,0,0,0.35); }
   </style>
 </head>
@@ -125,7 +123,10 @@
       <div class="max-w-md mx-auto">
         <div class="relative rounded-2xl overflow-hidden border-2 border-gray-200 bg-gray-900 shadow-xl" dir="ltr">
           <div class="relative w-full min-h-[280px]">
-            <div id="qr-reader" class="w-full min-h-[280px]"></div>
+            <div id="qr-reader" class="w-full min-h-[280px]">
+              <video id="qr-video" playsinline muted></video>
+              <canvas id="qr-canvas"></canvas>
+            </div>
             <div class="scanner-guide" aria-hidden="true"></div>
           </div>
           <div id="scan-status" class="scan-status absolute bottom-0 left-0 right-0 py-2 px-3 bg-black/60 text-white text-center text-sm">
@@ -366,18 +367,21 @@
 
   <!-- قاعدة بيانات المنتجات (يمكنك تعديل products.js) -->
   <script src="products.js"></script>
-  <!-- قارئ QR - html5-qrcode -->
-  <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <!-- jsQR: يعمل بشكل موثوق على iPhone و Safari -->
+  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <script>
     (function() {
       'use strict';
       if (typeof window.MAWTHOOQ_PRODUCTS === 'undefined') window.MAWTHOOQ_PRODUCTS = {};
 
-      var qrScanner = null;
       var lastDecodedAt = 0;
-      var DECODE_COOLDOWN_MS = 2000;
+      var DECODE_COOLDOWN_MS = 2500;
+      var scanStream = null;
+      var scanRaf = null;
+      var isScanning = false;
 
-      var readerEl = document.getElementById('qr-reader');
+      var videoEl = document.getElementById('qr-video');
+      var canvasEl = document.getElementById('qr-canvas');
       var resultEl = document.getElementById('scan-result');
       var resultProductEl = document.getElementById('scan-result-product');
       var resultRawEl = document.getElementById('scan-result-raw');
@@ -386,13 +390,6 @@
       var errorEl = document.getElementById('scan-error');
       var errorMsgEl = document.getElementById('scan-error-msg');
       var scanStatusEl = document.getElementById('scan-status');
-
-      // مسح كامل الإطار = أفضل كشف لرموز QR المطبوعة (بدون qrbox ثابت)
-      var SCANNER_CONFIG = {
-        fps: 15,
-        disableFlip: false,
-        rememberLastUsedCamera: true
-      };
 
       function getProductFromDecodedText(decodedText) {
         var t = (decodedText || '').trim();
@@ -433,11 +430,11 @@
         lastDecodedAt = now;
 
         console.log('[Mawthooq QR] Decoded:', decodedText);
+        stopScanner();
 
         if (scanStatusEl) scanStatusEl.style.display = 'none';
         resultEl.classList.remove('hidden');
         errorEl.classList.add('hidden');
-        if (qrScanner && qrScanner.isScanning()) qrScanner.stop().catch(function() {});
 
         var product = getProductFromDecodedText(decodedText);
         if (product) {
@@ -455,80 +452,99 @@
         if (errorMsgEl) errorMsgEl.textContent = msg || 'حدث خطأ. تحقق من الاتصال أو جرّب لاحقاً.';
         errorEl.classList.remove('hidden');
         if (scanStatusEl) scanStatusEl.style.display = 'none';
+        stopScanner();
       }
 
       function setScanningStatus(show) {
         if (scanStatusEl) scanStatusEl.style.display = show ? 'block' : 'none';
       }
 
-      function getBackCameraId(cameras) {
-        if (!cameras || !cameras.length) return null;
-        var back = cameras.find(function(c) {
-          var label = (c.label || '').toLowerCase();
-          return label.indexOf('back') >= 0 || label.indexOf('rear') >= 0 || label.indexOf('environment') >= 0 || label.indexOf('خلف') >= 0;
-        });
-        return back ? back.id : cameras[0].id;
-      }
-
-      function startWithCamera() {
-        var Html5Qrcode = window.Html5Qrcode;
-        Html5Qrcode.getCameras().then(function(cameras) {
-          if (!cameras || cameras.length === 0) {
-            showError('لم يتم العثور على كاميرا. تأكد من الاتصال أو الصلاحيات.');
-            return;
-          }
-          var backId = getBackCameraId(cameras);
-          qrScanner.start(backId, SCANNER_CONFIG, onScanSuccess, function() {})
-            .then(function() {})
-            .catch(function(err) {
-              qrScanner.start({ facingMode: 'environment' }, SCANNER_CONFIG, onScanSuccess, function() {})
-                .then(function() {})
-                .catch(function(err2) {
-                  qrScanner.start(cameras[0].id, SCANNER_CONFIG, onScanSuccess, function() {})
-                    .then(function() {})
-                    .catch(function(err3) {
-                      var m = (err && err.message) || (err2 && err2.message) || (err3 && err3.message) || '';
-                      if (m.indexOf('Permission') >= 0 || m.indexOf('NotAllowed') >= 0) showError('تم رفض صلاحية الكاميرا. يرجى السماح للموقع بالوصول إلى الكاميرا من إعدادات المتصفح.');
-                      else if (m.indexOf('NotFound') >= 0) showError('لم يتم العثور على كاميرا.');
-                      else showError('تعذّر تشغيل الكاميرا: ' + (m || 'جرّب متصفحاً آخر (Chrome / Edge).'));
-                    });
-                });
-            });
-        }).catch(function() {
-          qrScanner.start({ facingMode: 'environment' }, SCANNER_CONFIG, onScanSuccess, function() {})
-            .then(function() {})
-            .catch(function() { showError('تعذّر الوصول للكاميرا. تأكد من منح الصلاحية أو استخدم HTTPS.'); });
-        });
-      }
-
-      function startScanner() {
-        if (qrScanner && qrScanner.isScanning()) return;
-        resultEl.classList.add('hidden');
-        errorEl.classList.add('hidden');
-        setScanningStatus(true);
-        if (!window.Html5Qrcode) {
-          showError('لم يتم تحميل مكتبة المسح. تحقق من الاتصال بالإنترنت.');
+      function tick() {
+        if (!isScanning || !videoEl || videoEl.readyState !== videoEl.HAVE_ENOUGH_DATA) {
+          scanRaf = requestAnimationFrame(tick);
           return;
         }
-        readerEl.style.minHeight = '320px';
-
-        if (qrScanner) {
-          setTimeout(startWithCamera, 100);
+        var w = videoEl.videoWidth;
+        var h = videoEl.videoHeight;
+        if (!w || !h) {
+          scanRaf = requestAnimationFrame(tick);
           return;
         }
-
-        var scannerOpts = {};
-        if (typeof Html5QrcodeSupportedFormats !== 'undefined') scannerOpts.formatsToSupport = [Html5QrcodeSupportedFormats.QR_CODE];
-        else if (window.Html5QrcodeSupportedFormats) scannerOpts.formatsToSupport = [window.Html5QrcodeSupportedFormats.QR_CODE];
-        else scannerOpts.formatsToSupport = [0];
-
-        qrScanner = new Html5Qrcode('qr-reader', scannerOpts);
-        setTimeout(startWithCamera, 150);
+        canvasEl.width = w;
+        canvasEl.height = h;
+        var ctx = canvasEl.getContext('2d');
+        if (!ctx) {
+          scanRaf = requestAnimationFrame(tick);
+          return;
+        }
+        ctx.drawImage(videoEl, 0, 0);
+        var imageData = ctx.getImageData(0, 0, w, h);
+        var code = window.jsQR ? window.jsQR(imageData.data, w, h, { inversionAttempts: 'attemptBoth' }) : null;
+        if (code && code.data) onScanSuccess(code.data);
+        scanRaf = requestAnimationFrame(tick);
       }
 
       function stopScanner() {
+        isScanning = false;
+        if (scanRaf) {
+          cancelAnimationFrame(scanRaf);
+          scanRaf = null;
+        }
+        if (scanStream && scanStream.getTracks) {
+          scanStream.getTracks().forEach(function(t) { t.stop(); });
+          scanStream = null;
+        }
+        if (videoEl && videoEl.srcObject) {
+          videoEl.srcObject = null;
+        }
         setScanningStatus(false);
-        if (qrScanner && qrScanner.isScanning()) qrScanner.stop().catch(function() {});
+      }
+
+      function startScanner() {
+        if (isScanning) return;
+        resultEl.classList.add('hidden');
+        errorEl.classList.add('hidden');
+        setScanningStatus(true);
+
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+          showError('المتصفح لا يدعم الكاميرا. استخدم Chrome أو Safari على جهازك.');
+          return;
+        }
+        if (!window.jsQR) {
+          showError('لم يتم تحميل مكتبة المسح. تحقق من الاتصال بالإنترنت.');
+          return;
+        }
+
+        var constraints = {
+          video: {
+            facingMode: 'environment',
+            width: { ideal: 1280 },
+            height: { ideal: 720 }
+          },
+          audio: false
+        };
+
+        navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
+          scanStream = stream;
+          videoEl.srcObject = stream;
+          videoEl.setAttribute('playsinline', true);
+          videoEl.play().then(function() {
+            isScanning = true;
+            tick();
+          }).catch(function(err) {
+            showError('تعذّر تشغيل الفيديو. تأكد من السماح للكاميرا.');
+            stopScanner();
+          });
+        }).catch(function(err) {
+          var msg = (err && err.message) || '';
+          if (msg.indexOf('Permission') >= 0 || msg.indexOf('NotAllowed') >= 0)
+            showError('تم رفض صلاحية الكاميرا. السماح من إعدادات المتصفح.');
+          else if (msg.indexOf('NotFound') >= 0)
+            showError('لم يتم العثور على كاميرا.');
+          else
+            showError('تعذّر الوصول للكاميرا. جرّب HTTPS أو متصفحاً آخر.');
+          stopScanner();
+        });
       }
 
       scanAgainBtn.addEventListener('click', function() {
