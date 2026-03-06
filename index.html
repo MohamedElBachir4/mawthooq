@@ -21,15 +21,14 @@
     .nav-link:after { content: ''; position: absolute; width: 0; height: 2px; bottom: -2px; right: 0; background-color: #2563eb; transition: width 0.2s; }
     .nav-link:hover:after { width: 100%; }
     .mobile-menu { transition: all 0.2s ease; }
-    /* Scanner: visible guide frame + reliable detection */
+    /* Scanner: full-frame decoding (لا نحدد qrbox لمسح كامل الإطار) */
     #qr-reader { min-height: 320px !important; width: 100% !important; position: relative; }
     #qr-reader__scan_region { width: 100% !important; }
-    #qr-reader__scan_region video { width: 100% !important; height: auto !important; max-height: 70vh; object-fit: cover; }
+    #qr-reader__scan_region video { width: 100% !important; height: auto !important; max-height: 70vh; object-fit: contain; }
     #qr-reader__dashboard { display: none !important; }
-    #qr-reader__scan_region img { display: none !important; }
     .scan-status { transition: opacity 0.2s; }
-    /* Visible guide frame (library draws qrbox; ensure it stands out) */
-    #qr-reader [id$="__scan_region"] canvas { border-radius: 8px; }
+    /* إطار توجيه بصري فقط (لا يؤثر على فك الترميز) */
+    .scanner-guide { position: absolute; inset: 50%; transform: translate(-50%, -50%); width: 260px; height: 260px; border: 3px solid rgba(255,255,255,0.7); border-radius: 16px; pointer-events: none; box-shadow: 0 0 0 9999px rgba(0,0,0,0.35); }
   </style>
 </head>
 <body class="text-gray-800 antialiased" dir="rtl">
@@ -125,7 +124,10 @@
       </div>
       <div class="max-w-md mx-auto">
         <div class="relative rounded-2xl overflow-hidden border-2 border-gray-200 bg-gray-900 shadow-xl" dir="ltr">
-          <div id="qr-reader" class="w-full min-h-[280px]"></div>
+          <div class="relative w-full min-h-[280px]">
+            <div id="qr-reader" class="w-full min-h-[280px]"></div>
+            <div class="scanner-guide" aria-hidden="true"></div>
+          </div>
           <div id="scan-status" class="scan-status absolute bottom-0 left-0 right-0 py-2 px-3 bg-black/60 text-white text-center text-sm">
             <i class="fas fa-qrcode ml-1"></i> جاري المسح... ضع رمز QR داخل الإطار
           </div>
@@ -385,13 +387,11 @@
       var errorMsgEl = document.getElementById('scan-error-msg');
       var scanStatusEl = document.getElementById('scan-status');
 
-      // html5-qrcode config: optimized for real printed QR detection
+      // مسح كامل الإطار = أفضل كشف لرموز QR المطبوعة (بدون qrbox ثابت)
       var SCANNER_CONFIG = {
-        fps: 20,
+        fps: 15,
         disableFlip: false,
-        rememberLastUsedCamera: true,
-        qrbox: { width: 300, height: 300 },
-        aspectRatio: 1.0
+        rememberLastUsedCamera: true
       };
 
       function getProductFromDecodedText(decodedText) {
@@ -513,7 +513,7 @@
         readerEl.style.minHeight = '320px';
 
         if (qrScanner) {
-          startWithCamera();
+          setTimeout(startWithCamera, 100);
           return;
         }
 
@@ -523,7 +523,7 @@
         else scannerOpts.formatsToSupport = [0];
 
         qrScanner = new Html5Qrcode('qr-reader', scannerOpts);
-        startWithCamera();
+        setTimeout(startWithCamera, 150);
       }
 
       function stopScanner() {
