@@ -119,9 +119,13 @@
       </div>
       <div class="max-w-md mx-auto">
         <div id="qr-reader" class="rounded-2xl overflow-hidden border-2 border-gray-200 bg-black w-full min-h-[300px]" dir="ltr"></div>
-        <div id="scan-result" class="hidden mt-6 p-6 bg-white rounded-2xl shadow-lg border border-gray-100">
-          <p class="text-sm font-medium text-gray-500 mb-1">نتيجة المسح:</p>
-          <p id="scan-result-text" class="text-lg font-bold text-blue-600 break-all" dir="ltr"></p>
+        <div id="scan-result" class="hidden mt-6">
+          <div id="scan-result-product" class="hidden p-6 bg-white rounded-2xl shadow-lg border border-gray-100 text-right"></div>
+          <div id="scan-result-raw" class="hidden p-6 bg-white rounded-2xl shadow-lg border border-gray-100">
+            <p class="text-sm font-medium text-gray-500 mb-1">نتيجة المسح:</p>
+            <p id="scan-result-text" class="text-lg font-bold text-blue-600 break-all" dir="ltr"></p>
+            <p class="text-amber-600 text-sm mt-2">المنتج غير مسجّل في قاعدة بيانات موثوق.</p>
+          </div>
           <button type="button" id="scan-again-btn" class="mt-4 bg-blue-600 text-white px-5 py-2 rounded-full text-sm font-semibold hover:bg-blue-700 transition">مسح رمز آخر</button>
         </div>
         <div id="scan-error" class="hidden mt-4 p-4 bg-amber-50 border border-amber-200 rounded-2xl text-amber-800 text-sm"></div>
@@ -344,22 +348,67 @@
     </div>
   </footer>
 
+  <!-- قاعدة بيانات المنتجات (يمكنك تعديل products.js) -->
+  <script src="products.js"></script>
   <!-- قارئ QR - html5-qrcode -->
   <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
   <script>
     (function() {
+      if (typeof window.MAWTHOOQ_PRODUCTS === 'undefined') window.MAWTHOOQ_PRODUCTS = {};
       let qrScanner = null;
       const readerEl = document.getElementById('qr-reader');
       const resultEl = document.getElementById('scan-result');
+      const resultProductEl = document.getElementById('scan-result-product');
+      const resultRawEl = document.getElementById('scan-result-raw');
       const resultText = document.getElementById('scan-result-text');
       const scanAgainBtn = document.getElementById('scan-again-btn');
       const errorEl = document.getElementById('scan-error');
 
-      function showResult(text) {
-        resultText.textContent = text;
+      function getProductFromDecodedText(decodedText) {
+        var t = (decodedText || '').trim();
+        if (!t) return null;
+        var db = window.MAWTHOOQ_PRODUCTS || {};
+        if (db[t]) return db[t];
+        try {
+          var url = t.indexOf('http') === 0 ? t : 'https://x.com/?' + t;
+          var u = new URL(url);
+          var productId = u.searchParams.get('product') || u.searchParams.get('id');
+          if (productId && db[productId]) return db[productId];
+        } catch (e) {}
+        return null;
+      }
+
+      function renderProductCard(p) {
+        var name = p.nameAr || p.nameFr || p.name || p.id;
+        var brand = p.brand ? '<p class="text-gray-500 text-sm mt-1">' + p.brand + '</p>' : '';
+        var statusClass = (p.status === 'original') ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700';
+        var statusText = (p.status === 'original') ? '✔ أصلي' : 'غير معروف';
+        var img = p.image ? '<img src="' + p.image + '" alt="" class="w-full h-48 object-cover rounded-xl">' : '';
+        var desc = p.description ? '<p class="text-gray-600 text-sm mt-3">' + p.description + '</p>' : '';
+        var ing = p.ingredients ? '<p class="text-gray-500 text-xs mt-2"><span class="font-medium">المكونات:</span> ' + p.ingredients + '</p>' : '';
+        var warn = p.warnings ? '<p class="text-amber-700 text-xs mt-2"><i class="fas fa-exclamation-triangle ml-1"></i> ' + p.warnings + '</p>' : '';
+        var batch = p.batch ? '<p class="text-gray-400 text-xs mt-2" dir="ltr">Batch: ' + p.batch + '</p>' : '';
+        var instructions = p.instructions ? '<div class="mt-4 p-3 bg-blue-50 rounded-xl border border-blue-100"><p class="font-semibold text-blue-800 text-sm mb-1"><i class="fas fa-list-ol ml-1"></i> تعليمات الاستخدام</p><p class="text-gray-700 text-sm">' + p.instructions + '</p></div>' : '';
+        return '<div class="product-card">' + img +
+          '<div class="flex justify-between items-start mt-3 flex-wrap gap-2"><h3 class="font-bold text-lg text-gray-900">' + name + '</h3>' +
+          '<span class="' + statusClass + ' px-3 py-1 rounded-full text-xs font-medium">' + statusText + '</span></div>' +
+          brand + desc + ing + warn + batch + instructions + '</div>';
+      }
+
+      function showResult(decodedText) {
+        var product = getProductFromDecodedText(decodedText);
         resultEl.classList.remove('hidden');
         errorEl.classList.add('hidden');
         if (qrScanner && qrScanner.isScanning()) qrScanner.stop();
+        if (product) {
+          resultProductEl.innerHTML = renderProductCard(product);
+          resultProductEl.classList.remove('hidden');
+          resultRawEl.classList.add('hidden');
+        } else {
+          resultText.textContent = decodedText;
+          resultRawEl.classList.remove('hidden');
+          resultProductEl.classList.add('hidden');
+        }
       }
 
       function showError(msg) {
