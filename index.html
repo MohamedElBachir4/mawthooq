@@ -380,6 +380,7 @@
       var scanStream = null;
       var scanRaf = null;
       var isScanning = false;
+      var resultDisplayed = false;
 
       var videoEl = document.getElementById('qr-video');
       var canvasEl = document.getElementById('qr-canvas');
@@ -461,6 +462,7 @@
 
         console.log('[Mawthooq QR] Decoded:', decodedText);
         stopScanner();
+        resultDisplayed = true;
 
         if (scanStatusEl) scanStatusEl.style.display = 'none';
         resultEl.classList.remove('hidden');
@@ -578,6 +580,7 @@
       }
 
       scanAgainBtn.addEventListener('click', function() {
+        resultDisplayed = false;
         resultEl.classList.add('hidden');
         startScanner();
       });
@@ -585,8 +588,11 @@
       var scanSection = document.getElementById('scan');
       var observer = new IntersectionObserver(function(entries) {
         entries.forEach(function(entry) {
-          if (entry.isIntersecting) setTimeout(startScanner, 200);
-          else stopScanner();
+          if (entry.isIntersecting) {
+            if (!resultDisplayed) setTimeout(startScanner, 200);
+          } else {
+            stopScanner();
+          }
         });
       }, { threshold: 0.25 });
       observer.observe(scanSection);
