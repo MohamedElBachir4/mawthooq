@@ -401,6 +401,10 @@
           var u = new URL(url);
           var productId = u.searchParams.get('product') || u.searchParams.get('id');
           if (productId && db[productId]) return db[productId];
+          if (u.hostname && u.hostname.indexOf('qrfy.io') >= 0 && u.pathname) {
+            var code = u.pathname.replace(/^\/+/, '');
+            if (code && db[code]) return db[code];
+          }
         } catch (e) {}
         return null;
       }
