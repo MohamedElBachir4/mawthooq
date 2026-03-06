@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>موثوق – تحقق من منتجاتك فوراً</title>
+  <!-- Tailwind via CDN + modern font (Cairo) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Heroicons (outline) for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * { font-family: 'Cairo', sans-serif; }
+    body { background-color: #fafbfc; }
+    /* subtle animations */
+    .hover-lift { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .hover-lift:hover { transform: translateY(-4px); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.05), 0 10px 10px -5px rgba(0,0,0,0.01); }
+    .fade-in { animation: fadeIn 0.5s ease-in; }
+    @keyframes fadeIn { 0% { opacity: 0; transform: translateY(10px); } 100% { opacity: 1; transform: translateY(0); } }
+    .nav-link { position: relative; }
+    .nav-link:after { content: ''; position: absolute; width: 0; height: 2px; bottom: -2px; right: 0; background-color: #2563eb; transition: width 0.2s; }
+    .nav-link:hover:after { width: 100%; }
+    .mobile-menu { transition: all 0.2s ease; }
+  </style>
+</head>
+<body class="text-gray-800 antialiased" dir="rtl">
+
+  <!-- =====  NAVBAR (modern, with mobile menu) ===== -->
+  <nav class="bg-white/80 backdrop-blur-sm sticky top-0 z-30 border-b border-gray-100">
+    <div class="container mx-auto px-5 md:px-8 py-4 flex items-center justify-between">
+      <!-- logo -->
+      <a href="#" class="flex items-center gap-2 shrink-0">
+        <img src="logo.46%20PM" alt="موثوق" class="h-10 md:h-12 w-auto object-contain" />
+        <span class="text-2xl font-extrabold text-blue-600 tracking-tight">موثوق</span>
+      </a>
+      
+      <!-- desktop links -->
+      <div class="hidden md:flex space-x-2 space-x-reverse gap-8 font-medium text-gray-600">
+        <a href="#home" class="nav-link text-blue-600">الرئيسية</a>
+        <a href="#about" class="nav-link">من نحن</a>
+        <a href="#services" class="nav-link">خدماتنا</a>
+        <a href="#how" class="nav-link">آلية العمل</a>
+        <a href="#contact" class="nav-link">اتصل بنا</a>
+      </div>
+
+      <!-- CTA & mobile button -->
+      <div class="flex items-center gap-3">
+        <a href="#scan" class="hidden md:inline-block bg-blue-600 text-white px-5 py-2 rounded-full text-sm font-semibold shadow-md hover:bg-blue-700 transition shadow-lg hover:shadow-xl"> امسح منتجك</a>
+        <!-- mobile menu button -->
+        <button id="menuBtn" class="block md:hidden text-gray-600 text-2xl focus:outline-none">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </div>
+    <!-- mobile menu dropdown (hidden by default) -->
+    <div id="mobileMenu" class="hidden md:hidden bg-white border-t border-gray-100 py-4 px-6 flex flex-col gap-3 text-base font-medium">
+      <a href="#home" class="hover:text-blue-600 transition">الرئيسية</a>
+      <a href="#about" class="hover:text-blue-600 transition">من نحن</a>
+      <a href="#services" class="hover:text-blue-600 transition">خدماتنا</a>
+      <a href="#how" class="hover:text-blue-600 transition">آلية العمل</a>
+      <a href="#contact" class="hover:text-blue-600 transition">اتصل بنا</a>
+      <a href="#scan" class="bg-blue-50 text-blue-700 px-4 py-2 rounded-full text-center mt-2">امسح منتجك</a>
+    </div>
+  </nav>
+
+  <main class="container mx-auto px-5 md:px-8">
+
+    <!-- ===== 1. HOME / LANDING ===== -->
+    <section id="home" class="py-10 md:py-16 fade-in">
+      <div class="grid md:grid-cols-2 gap-12 items-center">
+        <div>
+          <h1 class="text-4xl md:text-5xl lg:text-6xl font-black leading-tight text-gray-900">تحقق من منتجاتك <br> <span class="text-blue-600">في لحظات</span></h1>
+          <p class="text-lg text-gray-600 mt-6 leading-relaxed">باستخدام منصة <span class="font-bold text-blue-600">موثوق</span>، امسح رمز QR على أي منتج غذائي أو تجميلي لتعرف مدى أصالته وسلامته. نحن نحميك من المنتجات المغشوشة والخطرة.</p>
+          <div class="flex flex-wrap gap-4 mt-8">
+            <a href="#scan" class="bg-blue-600 text-white px-8 py-4 rounded-full text-lg font-semibold shadow-xl hover:bg-blue-700 transition inline-flex items-center gap-2"><i class="fas fa-qrcode"></i> امسح المنتج الآن</a>
+            <a href="#how" class="border border-gray-300 bg-white px-8 py-4 rounded-full text-lg font-semibold text-gray-700 hover:border-blue-300 hover:text-blue-600 transition shadow-sm"> كيف تعمل</a>
+          </div>
+          <div class="flex items-center gap-6 mt-8 text-sm text-gray-500">
+            <span><i class="fas fa-check-circle text-green-500 ml-1"></i> أكثر من 10 آلاف منتج موثّق</span>
+            <span><i class="fas fa-shield-alt text-blue-500 ml-1"></i> دقة عالية</span>
+          </div>
+        </div>
+        <!-- illustration: verification concept (card with QR) -->
+        <div class="relative flex justify-center">
+          <div class="bg-white rounded-3xl shadow-2xl p-8 w-full max-w-md border border-gray-100 hover-lift">
+            <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 flex flex-col items-center">
+              <div class="bg-white p-3 rounded-xl shadow-sm border border-gray-200 w-fit">
+                <i class="fas fa-qrcode text-5xl text-blue-700"></i>
+              </div>
+              <p class="mt-4 font-semibold text-gray-700">منتج غذائي · شوكولاته</p>
+              <div class="bg-white w-full rounded-xl p-4 mt-4 text-right border">
+                <div class="flex justify-between items-center border-b pb-2">
+                  <span class="text-green-600 bg-green-50 px-2 py-1 rounded-full text-xs">✔ أصلي</span>
+                  <span class="font-bold">شوكولاته داكنة</span>
+                </div>
+                <p class="text-xs text-gray-500 mt-2"><i class="fas fa-leaf ml-1 text-green-600"></i> خالٍ من الدهون المهدرجة</p>
+                <p class="text-xs text-gray-500"><i class="fas fa-exclamation-triangle ml-1 text-amber-500"></i> قد يحتوي على مكسرات</p>
+              </div>
+              <p class="text-xs text-gray-400 mt-3 flex items-center gap-1"><i class="fas fa-check-circle text-blue-500"></i> تم التحقق عبر موثوق</p>
+            </div>
+          </div>
+          <!-- floating element -->
+          <div class="absolute -bottom-3 -left-3 bg-white p-3 rounded-full shadow-lg border border-gray-200 hidden md:block">
+            <i class="fas fa-camera text-blue-500 text-xl"></i>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== قارئ QR ===== -->
+    <section id="scan" class="py-16 border-t border-gray-200/60">
+      <div class="text-center max-w-2xl mx-auto mb-10">
+        <span class="text-blue-600 font-semibold tracking-wider">الماسح الضوئي</span>
+        <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-4">امسح رمز QR للمنتج</h2>
+        <p class="text-gray-500">وجّه الكاميرا نحو رمز QR على العبوة للتحقق من المنتج</p>
+      </div>
+      <div class="max-w-md mx-auto">
+        <div id="qr-reader" class="rounded-2xl overflow-hidden border-2 border-gray-200 bg-black"></div>
+        <div id="scan-result" class="hidden mt-6 p-6 bg-white rounded-2xl shadow-lg border border-gray-100">
+          <p class="text-sm font-medium text-gray-500 mb-1">نتيجة المسح:</p>
+          <p id="scan-result-text" class="text-lg font-bold text-blue-600 break-all" dir="ltr"></p>
+          <button type="button" id="scan-again-btn" class="mt-4 bg-blue-600 text-white px-5 py-2 rounded-full text-sm font-semibold hover:bg-blue-700 transition">مسح رمز آخر</button>
+        </div>
+        <div id="scan-error" class="hidden mt-4 p-4 bg-amber-50 border border-amber-200 rounded-2xl text-amber-800 text-sm"></div>
+        <p class="text-center text-gray-400 text-sm mt-4"><i class="fas fa-camera ml-1"></i> يُفضّل استخدام HTTPS أو localhost لتفعيل الكاميرا</p>
+      </div>
+    </section>
+
+    <!-- How it works (summary) + Features combined -->
+    <section class="py-16">
+      <div class="text-center max-w-2xl mx-auto">
+        <span class="text-blue-600 font-semibold tracking-wider">منظومة متكاملة</span>
+        <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-4">كيف يعمل موثوق؟</h2>
+        <p class="text-gray-500">ثلاث خطوات بسيطة للحصول على معلومات دقيقة عن أي منتج</p>
+      </div>
+      <div class="grid md:grid-cols-3 gap-8 mt-12">
+        <div class="bg-white p-8 rounded-3xl shadow-md border border-gray-50 hover-lift text-center">
+          <div class="bg-blue-100 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto text-blue-700 text-2xl">1</div>
+          <h3 class="text-xl font-bold mt-5">افتح الماسح</h3>
+          <p class="text-gray-500 mt-2">اضغط على زر المسح الضوئي داخل التطبيق أو الموقع.</p>
+        </div>
+        <div class="bg-white p-8 rounded-3xl shadow-md border border-gray-50 hover-lift text-center">
+          <div class="bg-blue-100 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto text-blue-700 text-2xl">2</div>
+          <h3 class="text-xl font-bold mt-5">امسح رمز QR</h3>
+          <p class="text-gray-500 mt-2">وجّه الكاميرا نحو الملصق الموجود على العبوة.</p>
+        </div>
+        <div class="bg-white p-8 rounded-3xl shadow-md border border-gray-50 hover-lift text-center">
+          <div class="bg-blue-100 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto text-blue-700 text-2xl">3</div>
+          <h3 class="text-xl font-bold mt-5">تحقق واطلع</h3>
+          <p class="text-gray-500 mt-2">تظهر لك معلومات شاملة: المكونات، المخاطر، وتعليمات الاستخدام.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features section (cards with icons) -->
+    <section class="py-10">
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex gap-4 items-start hover-lift">
+          <i class="fas fa-check-circle text-3xl text-blue-500"></i>
+          <div><h4 class="font-bold">توثيق فوري</h4><p class="text-sm text-gray-500">نتائج خلال ثوانٍ</p></div>
+        </div>
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex gap-4 items-start hover-lift">
+          <i class="fas fa-clipboard-list text-3xl text-emerald-500"></i>
+          <div><h4 class="font-bold">تحليل المكونات</h4><p class="text-sm text-gray-500">تقرير شامل عن المواد</p></div>
+        </div>
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex gap-4 items-start hover-lift">
+          <i class="fas fa-bell text-3xl text-amber-500"></i>
+          <div><h4 class="font-bold">تنبيهات السلامة</h4><p class="text-sm text-gray-500">حساسية، مواد ضارة</p></div>
+        </div>
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex gap-4 items-start hover-lift">
+          <i class="fas fa-database text-3xl text-indigo-500"></i>
+          <div><h4 class="font-bold">معلومات موثقة</h4><p class="text-sm text-gray-500">قاعدة بيانات محدثة</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 2. ABOUT US ===== -->
+    <section id="about" class="py-20 border-t border-gray-200/60">
+      <div class="grid md:grid-cols-2 gap-16 items-center">
+        <div>
+          <span class="text-blue-600 font-semibold">من نحن</span>
+          <h2 class="text-3xl md:text-4xl font-bold mt-2">نحو عالم بلا منتجات مغشوشة</h2>
+          <p class="text-gray-600 mt-6 leading-relaxed">موثوق منصة رقمية تهدف إلى حماية المستهلك العربي من مخاطر المنتجات غير الأصلية أو الضارة. نؤمن بأن لكل شخص الحق في معرفة ما يضعها على بشرته أو داخل جسده. انطلقنا من رؤية واضحة: <span class="font-semibold">الشفافية الكاملة</span> عبر تقنية المسح الضوئي.</p>
+          <p class="text-gray-600 mt-4 leading-relaxed">نعمل مع مختبرات وهيئات رقابية لنضمن لك معلومات دقيقة عن الآلاف من المنتجات الغذائية ومستحضرات التجميل. مهمتنا: <span class="bg-blue-50 px-2 py-1 rounded">ثقة المستهلك أولاً</span>.</p>
+        </div>
+        <div class="bg-blue-50 p-10 rounded-3xl relative">
+          <i class="fas fa-quote-right text-6xl text-blue-200 absolute top-4 left-4"></i>
+          <div class="relative z-10">
+            <p class="text-xl font-medium">"نحن لا نكتفي بالكشف عن الغش، بل نُعلم المستهلك كيف يقرأ الملصقات ويحمي نفسه."</p>
+            <div class="flex items-center gap-3 mt-6">
+              <div class="w-12 h-12 bg-blue-200 rounded-full flex items-center justify-center text-blue-800 font-bold text-xl">ن</div>
+              <div><p class="font-bold">نورة السعد</p><p class="text-sm text-gray-500">المؤسسة والرئيسة التنفيذية</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 3. OUR SERVICES ===== -->
+    <section id="services" class="py-20 border-t border-gray-200/60">
+      <div class="text-center max-w-2xl mx-auto">
+        <h2 class="text-3xl md:text-4xl font-bold">خدمات موثوق</h2>
+        <p class="text-gray-500 mt-3">نقدم أكثر من مجرد مسح QR</p>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-16">
+        <div class="bg-white p-8 rounded-3xl shadow-md hover-lift text-center">
+          <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto text-blue-600 text-2xl"><i class="fas fa-check-double"></i></div>
+          <h3 class="font-bold text-xl mt-5">التحقق من الأصالة</h3>
+          <p class="text-gray-500 mt-3 text-sm">نتأكد أن المنتج ليس مقلداً عبر مطابقة الرمز مع قاعدة البيانات.</p>
+        </div>
+        <div class="bg-white p-8 rounded-3xl shadow-md hover-lift text-center">
+          <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto text-emerald-600 text-2xl"><i class="fas fa-flask"></i></div>
+          <h3 class="font-bold text-xl mt-5">تحليل المكونات</h3>
+          <p class="text-gray-500 mt-3 text-sm">تفسير كل مادة كيميائية ومستوى خطورتها حسب الهيئات الصحية.</p>
+        </div>
+        <div class="bg-white p-8 rounded-3xl shadow-md hover-lift text-center">
+          <div class="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto text-amber-600 text-2xl"><i class="fas fa-exclamation-triangle"></i></div>
+          <h3 class="font-bold text-xl mt-5">تنبيهات السلامة</h3>
+          <p class="text-gray-500 mt-3 text-sm">إشعارات فورية إذا احتوى المنتج على مسببات حساسية أو مواد محظورة.</p>
+        </div>
+        <div class="bg-white p-8 rounded-3xl shadow-md hover-lift text-center">
+          <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto text-purple-600 text-2xl"><i class="fas fa-info-circle"></i></div>
+          <h3 class="font-bold text-xl mt-5">معلومات شاملة</h3>
+          <p class="text-gray-500 mt-3 text-sm">طريقة الاستخدام، تاريخ الإنتاج، انتهاء الصلاحية، وتقييم المستخدمين.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 4. HOW IT WORKS (detailed) ===== -->
+    <section id="how" class="py-20 border-t border-gray-200/60">
+      <div class="grid md:grid-cols-2 gap-12 items-center">
+        <div class="order-2 md:order-1">
+          <span class="text-blue-600 font-semibold">دليل الاستخدام</span>
+          <h2 class="text-3xl md:text-4xl font-bold mt-2">آلية العمل خطوة بخطوة</h2>
+          <div class="mt-8 space-y-6">
+            <div class="flex gap-4"><span class="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold shrink-0">١</span><div><h4 class="font-bold text-lg">افتح scanner</h4><p class="text-gray-500">من الصفحة الرئيسية اضغط على زر "امسح منتجك".</p></div></div>
+            <div class="flex gap-4"><span class="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold shrink-0">٢</span><div><h4 class="font-bold text-lg">وجّه الكاميرا للرمز</h4><p class="text-gray-500">ضع رمز QR داخل الإطار – يعمل حتى في الإضاءة المنخفضة.</p></div></div>
+            <div class="flex gap-4"><span class="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold shrink-0">٣</span><div><h4 class="font-bold text-lg">التحقق الفوري</h4><p class="text-gray-500">يقوم نظام موثوق بمقارنة الرمز مع قاعدة بيانات المنتجات الأصلية.</p></div></div>
+            <div class="flex gap-4"><span class="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold shrink-0">٤</span><div><h4 class="font-bold text-lg">استعراض التفاصيل</h4><p class="text-gray-500">تظهر لك بطاقة المنتج: المكونات، المخاطر، تقييم السلامة.</p></div></div>
+          </div>
+        </div>
+        <div class="order-1 md:order-2 flex justify-center">
+          <div class="bg-white p-6 rounded-3xl shadow-xl border max-w-sm">
+            <img src="https://placehold.co/600x400/f1f5f9/2563eb?text=QR+Scanner+Preview" alt="how to scan" class="rounded-2xl">
+            <p class="text-center text-sm text-gray-500 mt-3"><i class="fas fa-mobile-alt ml-1"></i> واجهة المسح الضوئي</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 5. CONTACT US ===== -->
+    <section id="contact" class="py-20 border-t border-gray-200/60">
+      <div class="grid md:grid-cols-2 gap-12">
+        <div>
+          <h2 class="text-3xl font-bold">تواصل مع فريق موثوق</h2>
+          <p class="text-gray-500 mt-4">نحن هنا للإجابة عن استفساراتك، اقتراحاتك، أو للإبلاغ عن منتج.</p>
+          <div class="mt-10 space-y-4">
+            <div class="flex items-center gap-4 text-gray-600"><i class="fas fa-map-pin text-blue-500 w-6"></i> <span>غرداية، الجزائر</span></div>
+            <div class="flex items-center gap-4 text-gray-600"><i class="fas fa-phone-alt text-blue-500 w-6"></i> <span dir="ltr">+213 675 47 85 49</span></div>
+            <div class="flex items-center gap-4 text-gray-600"><i class="fas fa-envelope text-blue-500 w-6"></i> <span>hello@mawthooq.sa</span></div>
+            <div class="flex gap-5 mt-8 text-2xl text-gray-500">
+              <a href="#" class="hover:text-blue-600 transition"><i class="fab fa-x-twitter"></i></a>
+              <a href="#" class="hover:text-blue-600 transition"><i class="fab fa-linkedin-in"></i></a>
+              <a href="#" class="hover:text-blue-600 transition"><i class="fab fa-instagram"></i></a>
+            </div>
+          </div>
+        </div>
+        <!-- modern form -->
+        <div class="bg-white p-8 rounded-3xl shadow-lg border border-gray-100">
+          <form action="#" method="post" class="space-y-5">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">الاسم الكامل</label>
+              <input type="text" placeholder="مثال: سارة أحمد" class="w-full border border-gray-200 rounded-2xl p-4 focus:ring-2 focus:ring-blue-200 outline-none transition">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">البريد الإلكتروني</label>
+              <input type="email" placeholder="sara@example.com" class="w-full border border-gray-200 rounded-2xl p-4 focus:ring-2 focus:ring-blue-200 outline-none transition">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">الرسالة</label>
+              <textarea rows="4" placeholder="كيف يمكننا مساعدتك؟" class="w-full border border-gray-200 rounded-2xl p-4 focus:ring-2 focus:ring-blue-200 outline-none transition"></textarea>
+            </div>
+            <button class="bg-blue-600 text-white w-full py-4 rounded-2xl text-lg font-semibold hover:bg-blue-700 transition shadow-lg">إرسال الرسالة</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA section before footer -->
+    <section class="my-16 bg-gradient-to-l from-blue-600 to-indigo-700 text-white p-12 md:p-16 rounded-4xl shadow-2xl rounded-3xl">
+      <div class="text-center max-w-3xl mx-auto">
+        <h3 class="text-3xl md:text-4xl font-bold">احمِ نفسك وعائلتك اليوم</h3>
+        <p class="text-blue-100 mt-4 text-lg">جرّب موثوق مجاناً، وامسح أي منتج لتعرف حقيقته.</p>
+        <a href="#scan" class="inline-block mt-8 bg-white text-blue-700 px-10 py-4 rounded-full text-xl font-bold shadow-2xl hover:bg-gray-100 transition">ابدأ المسح الآن</a>
+        <p class="text-sm text-blue-200 mt-6">لا تحتاج تحميل · يعمل مباشرة من المتصفح</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== MODERN FOOTER ===== -->
+  <footer class="bg-white border-t border-gray-200 pt-16 pb-8">
+    <div class="container mx-auto px-5 md:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-5 gap-10">
+        <div class="md:col-span-2">
+          <span class="text-3xl font-extrabold text-blue-600">موثوق</span>
+          <p class="text-gray-500 mt-4 text-sm leading-relaxed">منصة التحقق الذكية للمنتجات. نضمن لك أصالة وسلامة ما تستهلكه.</p>
+          <div class="flex gap-4 mt-6 text-xl">
+            <a href="#" class="text-gray-400 hover:text-blue-600"><i class="fab fa-x-twitter"></i></a>
+            <a href="#" class="text-gray-400 hover:text-blue-600"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#" class="text-gray-400 hover:text-blue-600"><i class="fab fa-instagram"></i></a>
+          </div>
+        </div>
+        <div>
+          <h5 class="font-bold text-gray-900 mb-4">الشركة</h5>
+          <ul class="space-y-2 text-gray-500 text-sm">
+            <li><a href="#about" class="hover:text-blue-600">من نحن</a></li>
+            <li><a href="#services" class="hover:text-blue-600">خدماتنا</a></li>
+            <li><a href="#contact" class="hover:text-blue-600">اتصل بنا</a></li>
+            <li><a href="#" class="hover:text-blue-600">الوظائف</a></li>
+          </ul>
+        </div>
+        <div>
+          <h5 class="font-bold text-gray-900 mb-4">الدعم</h5>
+          <ul class="space-y-2 text-gray-500 text-sm">
+            <li><a href="#" class="hover:text-blue-600">الأسئلة الشائعة</a></li>
+            <li><a href="#" class="hover:text-blue-600">سياسة الخصوصية</a></li>
+            <li><a href="#" class="hover:text-blue-600">شروط الاستخدام</a></li>
+          </ul>
+        </div>
+        <div>
+          <h5 class="font-bold text-gray-900 mb-4">التنزيل</h5>
+          <ul class="space-y-2 text-gray-500 text-sm">
+            <li><a href="#" class="hover:text-blue-600"><i class="fab fa-apple ml-1"></i> App Store</a></li>
+            <li><a href="#" class="hover:text-blue-600"><i class="fab fa-google-play ml-1"></i> Google Play</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-gray-100 mt-14 pt-6 text-center text-gray-400 text-sm">
+        © 2025 موثوق - منصة التوثيق الذكية. جميع الحقوق محفوظة.
+      </div>
+    </div>
+  </footer>
+
+  <!-- قارئ QR - html5-qrcode -->
+  <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <script>
+    (function() {
+      let qrScanner = null;
+      const readerEl = document.getElementById('qr-reader');
+      const resultEl = document.getElementById('scan-result');
+      const resultText = document.getElementById('scan-result-text');
+      const scanAgainBtn = document.getElementById('scan-again-btn');
+      const errorEl = document.getElementById('scan-error');
+
+      function showResult(text) {
+        resultText.textContent = text;
+        resultEl.classList.remove('hidden');
+        errorEl.classList.add('hidden');
+        if (qrScanner && qrScanner.isScanning()) qrScanner.stop();
+      }
+
+      function showError(msg) {
+        errorEl.textContent = msg;
+        errorEl.classList.remove('hidden');
+      }
+
+      function hideError() {
+        errorEl.classList.add('hidden');
+      }
+
+      function startScanner() {
+        if (qrScanner && qrScanner.isScanning()) return;
+        resultEl.classList.add('hidden');
+        hideError();
+        if (!window.Html5Qrcode) {
+          showError('لم يتم تحميل مكتبة المسح. تحقق من الاتصال بالإنترنت.');
+          return;
+        }
+        if (qrScanner) {
+          qrScanner.start(
+            { facingMode: 'environment' },
+            { fps: 10, qrbox: { width: 250, height: 250 } },
+            function(decodedText) { showResult(decodedText); },
+            function() {}
+          ).catch(function(err) { showError('تعذّر الوصول للكاميرا: ' + (err.message || 'يرجى السماح بالكاميرا')); });
+          return;
+        }
+        qrScanner = new Html5Qrcode('qr-reader');
+        qrScanner.start(
+          { facingMode: 'environment' },
+          { fps: 10, qrbox: { width: 250, height: 250 } },
+          function(decodedText) { showResult(decodedText); },
+          function() {}
+        ).catch(function(err) { showError('تعذّر الوصول للكاميرا: ' + (err.message || 'يرجى السماح بالكاميرا')); });
+      }
+
+      function stopScanner() {
+        if (qrScanner && qrScanner.isScanning()) qrScanner.stop();
+      }
+
+      scanAgainBtn.addEventListener('click', function() {
+        resultEl.classList.add('hidden');
+        startScanner();
+      });
+
+      // بدء المسح تلقائياً عند الوصول لقسم المسح
+      const scanSection = document.getElementById('scan');
+      const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) startScanner();
+          else stopScanner();
+        });
+      }, { threshold: 0.3 });
+      observer.observe(scanSection);
+
+      // إذا كان الرابط يحتوي #scan نبدأ مباشرة
+      if (window.location.hash === '#scan') setTimeout(startScanner, 500);
+    })();
+  </script>
+
+  <!-- tiny JavaScript for mobile menu toggle -->
+  <script>
+    const menuBtn = document.getElementById('menuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    menuBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+
+    // optional: close menu when clicking a link (improves UX)
+    document.querySelectorAll('#mobileMenu a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.add('hidden');
+      });
+    });
+  </script>
+
+  <!-- smooth scroll for anchor links (optional) -->
+  <script>
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+  </script>
+</body>
+</html>
