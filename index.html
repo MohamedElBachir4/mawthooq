@@ -373,6 +373,7 @@
     (function() {
       'use strict';
       if (typeof window.MAWTHOOQ_PRODUCTS === 'undefined') window.MAWTHOOQ_PRODUCTS = {};
+      var QRFY_TOUCHE = { id: 'ttyrz4Qa0Z', nameAr: 'كريم مرطّب للوجه', nameFr: 'Crème hydratante visage', brand: 'Touché Skincare Lab', category: 'تجميلي', status: 'original', image: 'https://placehold.co/400x300/f1f5f9/2563eb?text=Touch%C3%A9+Creme', description: 'كريم مرطّب يومي للوجه من Touché Skincare Lab. مناسب للبشرة الحساسة.', ingredients: 'ماء، غليسيرين، زيت اللوز، فيتامين E، خلاصة الصبار.', warnings: 'للاستخدام الخارجي فقط. تجنب منطقة العين.', instructions: 'ضع كمية صغيرة على الوجه والرقبة بعد التنظيف. دَلّك برفق حتى الامتصاص. يُنصح بالاستخدام صباحاً ومساءً.', productUrl: 'https://qrfy.io/ttyrz4Qa0Z' };
 
       var lastDecodedAt = 0;
       var DECODE_COOLDOWN_MS = 2500;
@@ -392,17 +393,20 @@
       var scanStatusEl = document.getElementById('scan-status');
 
       function getProductFromDecodedText(decodedText) {
-        var t = (decodedText || '').trim();
+        var t = (decodedText || '').trim().replace(/\s+/g, ' ');
         if (!t) return null;
         var db = window.MAWTHOOQ_PRODUCTS || {};
         if (db[t]) return db[t];
+        var tNoSlash = t.replace(/\/+$/, '');
+        if (db[tNoSlash]) return db[tNoSlash];
+        if (t.indexOf('qrfy.io/ttyrz4Qa0Z') >= 0) return (db['ttyrz4Qa0Z'] || db['https://qrfy.io/ttyrz4Qa0Z'] || QRFY_TOUCHE);
         try {
           var url = t.indexOf('http') === 0 ? t : 'https://x.com/?' + t;
           var u = new URL(url);
           var productId = u.searchParams.get('product') || u.searchParams.get('id');
           if (productId && db[productId]) return db[productId];
           if (u.hostname && u.hostname.indexOf('qrfy.io') >= 0 && u.pathname) {
-            var code = u.pathname.replace(/^\/+/, '');
+            var code = u.pathname.replace(/^\/+|\/+$/g, '');
             if (code && db[code]) return db[code];
           }
         } catch (e) {}
@@ -414,17 +418,22 @@
         var brand = p.brand ? '<p class="text-gray-500 text-sm mt-1">' + p.brand + '</p>' : '';
         var statusClass = (p.status === 'original') ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700';
         var statusText = (p.status === 'original') ? '✔ أصلي' : 'غير معروف';
-        var safetyLabel = '<p class="text-xs font-medium text-gray-500 mt-2">حالة السلامة</p>';
-        var img = p.image ? '<img src="' + p.image + '" alt="" class="w-full h-48 object-cover rounded-xl">' : '';
-        var desc = p.description ? '<p class="text-gray-600 text-sm mt-3">' + p.description + '</p>' : '';
-        var ing = p.ingredients ? '<p class="text-gray-500 text-xs mt-2"><span class="font-medium">المكونات:</span> ' + p.ingredients + '</p>' : '';
-        var warn = p.warnings ? '<p class="text-amber-700 text-xs mt-2"><i class="fas fa-exclamation-triangle ml-1"></i> ' + p.warnings + '</p>' : '';
-        var batch = p.batch ? '<p class="text-gray-400 text-xs mt-2" dir="ltr">Batch: ' + p.batch + '</p>' : '';
-        var instructions = p.instructions ? '<div class="mt-4 p-3 bg-blue-50 rounded-xl border border-blue-100"><p class="font-semibold text-blue-800 text-sm mb-1"><i class="fas fa-list-ol ml-1"></i> تعليمات الاستخدام</p><p class="text-gray-700 text-sm">' + p.instructions + '</p></div>' : '';
-        return '<div class="product-card">' + img +
-          '<div class="flex justify-between items-start mt-3 flex-wrap gap-2"><h3 class="font-bold text-lg text-gray-900">' + name + '</h3>' +
-          '<span class="' + statusClass + ' px-3 py-1 rounded-full text-xs font-medium">' + statusText + '</span></div>' +
-          safetyLabel + brand + desc + ing + warn + batch + instructions + '</div>';
+        var img = p.image ? '<img src="' + p.image + '" alt="" class="w-full h-52 object-cover rounded-t-2xl">' : '';
+        var desc = p.description ? '<p class="text-gray-600 leading-relaxed">' + p.description + '</p>' : '';
+        var ing = p.ingredients ? '<p class="text-gray-500 text-sm mt-3"><span class="font-medium text-gray-700">المكونات:</span> ' + p.ingredients + '</p>' : '';
+        var warn = p.warnings ? '<p class="text-amber-700 text-sm mt-2"><i class="fas fa-exclamation-triangle ml-1"></i> ' + p.warnings + '</p>' : '';
+        var batch = p.batch ? '<p class="text-gray-400 text-sm mt-2" dir="ltr">Batch: ' + p.batch + '</p>' : '';
+        var instructions = p.instructions ? '<div class="mt-4 p-4 bg-blue-50 rounded-xl border border-blue-100"><p class="font-semibold text-blue-800 mb-2"><i class="fas fa-list-ol ml-1"></i> تعليمات الاستخدام</p><p class="text-gray-700 text-sm">' + p.instructions + '</p></div>' : '';
+        return '<div class="product-detail-card rounded-2xl overflow-hidden border border-gray-100">' + img +
+          '<div class="p-5">' +
+          '<div class="flex justify-between items-start flex-wrap gap-2">' +
+          '<h2 class="text-xl font-bold text-gray-900">' + name + '</h2>' +
+          '<span class="' + statusClass + ' px-4 py-2 rounded-full text-sm font-semibold">' + statusText + '</span>' +
+          '</div>' +
+          '<p class="text-sm font-medium text-gray-500 mt-1">حالة المنتج</p>' +
+          brand +
+          '<div class="mt-4"><p class="text-sm font-semibold text-gray-700 mb-1">الوصف</p>' + desc + '</div>' +
+          ing + warn + batch + instructions + '</div></div>';
       }
 
       function onScanSuccess(decodedText) {
