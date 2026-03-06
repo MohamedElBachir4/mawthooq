@@ -373,7 +373,7 @@
     (function() {
       'use strict';
       if (typeof window.MAWTHOOQ_PRODUCTS === 'undefined') window.MAWTHOOQ_PRODUCTS = {};
-      var QRFY_TOUCHE = { id: 'ttyrz4Qa0Z', nameAr: 'كريم مرطّب للوجه', nameFr: 'Crème hydratante visage', brand: 'Touché Skincare Lab', category: 'تجميلي', status: 'original', image: 'https://placehold.co/400x300/f1f5f9/2563eb?text=Touch%C3%A9+Creme', description: 'كريم مرطّب يومي للوجه من Touché Skincare Lab. مناسب للبشرة الحساسة.', ingredients: 'ماء، غليسيرين، زيت اللوز، فيتامين E، خلاصة الصبار.', warnings: 'للاستخدام الخارجي فقط. تجنب منطقة العين.', instructions: 'ضع كمية صغيرة على الوجه والرقبة بعد التنظيف. دَلّك برفق حتى الامتصاص. يُنصح بالاستخدام صباحاً ومساءً.', productUrl: 'https://qrfy.io/ttyrz4Qa0Z' };
+      var QRFY_TOUCHE = { id: 'ttyrz4Qa0Z', nameAr: 'كريم مرطّب للوجه', nameFr: 'Crème hydratante visage', brand: 'Touché Skincare Lab', category: 'تجميلي', status: 'original', image: 'https://placehold.co/400x300/f1f5f9/2563eb?text=Touch%C3%A9+Creme', description: 'كريم مرطّب يومي للوجه من Touché Skincare Lab. مناسب للبشرة الحساسة.', ingredients: 'ماء، غليسيرين، زيت اللوز، فيتامين E، خلاصة الصبار.', warnings: 'للاستخدام الخارجي فقط. تجنب منطقة العين.', instructions: 'ضع كمية صغيرة على الوجه والرقبة بعد التنظيف. دَلّك برفق حتى الامتصاص. يُنصح بالاستخدام صباحاً ومساءً.', productUrl: 'https://qrfy.io/ttyrz4Qa0Z', usageTimes: 'صباحاً ومساءً، مرة أو مرتين يومياً بعد التنظيف.', risks: 'نادراً قد يسبب تهيّجاً خفيفاً للبشرة الحساسة جداً. في حال استمرار الاحمرار أو الحكة أوقف الاستخدام واستشر الطبيب.', storage: 'يحفظ في مكان جاف ومعتدل الحرارة، بعيداً عن أشعة الشمس المباشرة.', expiryAfterOpen: 'يفضّل استخدامه خلال 6 أشهر من فتح العبوة (PAO).', skinTypes: 'جميع أنواع البشرة، خصوصاً الجافة والعادية والحساسة.', volume: '50 مل', contraindications: 'لا يُنصح به في حال التحسس من أي من المكونات. تجنب منطقة العين.', benefits: 'ترطيب عميق، حماية حاجز البشرة، ملمس غير لزج، خالٍ من العطور الصناعية.' };
 
       var lastDecodedAt = 0;
       var DECODE_COOLDOWN_MS = 2500;
@@ -413,27 +413,41 @@
         return null;
       }
 
+      function section(title, icon, content, bgClass) {
+        if (!content) return '';
+        var bg = bgClass || 'bg-gray-50';
+        return '<div class="' + bg + ' rounded-xl p-4 mt-3 border border-gray-100"><p class="text-sm font-semibold text-gray-800 mb-2">' + icon + ' ' + title + '</p><p class="text-gray-700 text-sm leading-relaxed">' + content + '</p></div>';
+      }
       function renderProductCard(p) {
         var name = p.nameAr || p.nameFr || p.name || p.id;
         var brand = p.brand ? '<p class="text-gray-500 text-sm mt-1">' + p.brand + '</p>' : '';
         var statusClass = (p.status === 'original') ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700';
         var statusText = (p.status === 'original') ? '✔ أصلي' : 'غير معروف';
         var img = p.image ? '<img src="' + p.image + '" alt="" class="w-full h-52 object-cover rounded-t-2xl">' : '';
-        var desc = p.description ? '<p class="text-gray-600 leading-relaxed">' + p.description + '</p>' : '';
-        var ing = p.ingredients ? '<p class="text-gray-500 text-sm mt-3"><span class="font-medium text-gray-700">المكونات:</span> ' + p.ingredients + '</p>' : '';
-        var warn = p.warnings ? '<p class="text-amber-700 text-sm mt-2"><i class="fas fa-exclamation-triangle ml-1"></i> ' + p.warnings + '</p>' : '';
-        var batch = p.batch ? '<p class="text-gray-400 text-sm mt-2" dir="ltr">Batch: ' + p.batch + '</p>' : '';
-        var instructions = p.instructions ? '<div class="mt-4 p-4 bg-blue-50 rounded-xl border border-blue-100"><p class="font-semibold text-blue-800 mb-2"><i class="fas fa-list-ol ml-1"></i> تعليمات الاستخدام</p><p class="text-gray-700 text-sm">' + p.instructions + '</p></div>' : '';
-        return '<div class="product-detail-card rounded-2xl overflow-hidden border border-gray-100">' + img +
+        var desc = p.description ? '<p class="text-gray-600 leading-relaxed text-sm">' + p.description + '</p>' : '';
+        var ing = p.ingredients ? section('المكونات', '<i class="fas fa-flask text-blue-500"></i>', p.ingredients) : '';
+        var warn = p.warnings ? section('تحذيرات', '<i class="fas fa-exclamation-triangle text-amber-500"></i>', p.warnings, 'bg-amber-50') : '';
+        var batch = p.batch ? '<p class="text-gray-500 text-xs mt-2" dir="ltr">رقم الدفعة: ' + p.batch + '</p>' : '';
+        var instructions = p.instructions ? section('تعليمات الاستخدام', '<i class="fas fa-list-ol text-blue-500"></i>', p.instructions, 'bg-blue-50') : '';
+        var usageTimes = p.usageTimes ? section('أوقات الاستعمال', '<i class="fas fa-clock text-indigo-500"></i>', p.usageTimes) : '';
+        var risks = p.risks ? section('مخاطر محتملة', '<i class="fas fa-shield-alt text-red-500"></i>', p.risks, 'bg-red-50') : '';
+        var storage = p.storage ? section('طريقة التخزين', '<i class="fas fa-box-open text-gray-600"></i>', p.storage) : '';
+        var expiry = p.expiryAfterOpen ? section('الصلاحية بعد الفتح', '<i class="fas fa-calendar-check text-emerald-600"></i>', p.expiryAfterOpen) : '';
+        var skinTypes = p.skinTypes ? section('أنواع البشرة المناسبة', '<i class="fas fa-hand-sparkles text-pink-500"></i>', p.skinTypes) : '';
+        var volume = p.volume ? '<p class="text-sm text-gray-600 mt-2"><i class="fas fa-weight-hanging text-gray-400 ml-1"></i> الحجم: ' + p.volume + '</p>' : '';
+        var contraindications = p.contraindications ? section('موانع الاستخدام', '<i class="fas fa-ban text-red-600"></i>', p.contraindications, 'bg-red-50') : '';
+        var benefits = p.benefits ? section('الفوائد', '<i class="fas fa-check-circle text-green-600"></i>', p.benefits, 'bg-green-50') : '';
+        return '<div class="product-detail-card rounded-2xl overflow-hidden border border-gray-100 shadow-lg">' + img +
           '<div class="p-5">' +
           '<div class="flex justify-between items-start flex-wrap gap-2">' +
           '<h2 class="text-xl font-bold text-gray-900">' + name + '</h2>' +
           '<span class="' + statusClass + ' px-4 py-2 rounded-full text-sm font-semibold">' + statusText + '</span>' +
           '</div>' +
-          '<p class="text-sm font-medium text-gray-500 mt-1">حالة المنتج</p>' +
-          brand +
-          '<div class="mt-4"><p class="text-sm font-semibold text-gray-700 mb-1">الوصف</p>' + desc + '</div>' +
-          ing + warn + batch + instructions + '</div></div>';
+          '<p class="text-xs font-medium text-gray-500 mt-1">حالة المنتج</p>' +
+          brand + volume + batch +
+          '<div class="mt-4"><p class="text-xs font-semibold text-gray-500 mb-1">الوصف</p>' + desc + '</div>' +
+          benefits + usageTimes + instructions + ing + skinTypes + expiry + storage + contraindications + risks + warn +
+          '</div></div>';
       }
 
       function onScanSuccess(decodedText) {
