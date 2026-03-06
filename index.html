@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>موثوق – تحقق من منتجاتك فوراً</title>
+  <script src="lang.js"></script>
   <!-- Tailwind via CDN + modern font (Cairo) -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -27,6 +28,7 @@
     #qr-canvas { display: none; }
     .scan-status { transition: opacity 0.2s; }
     .scanner-guide { position: absolute; inset: 50%; transform: translate(-50%, -50%); width: 260px; height: 260px; border: 3px solid rgba(255,255,255,0.7); border-radius: 16px; pointer-events: none; box-shadow: 0 0 0 9999px rgba(0,0,0,0.35); }
+    .lang-btn.active { background: #2563eb; color: white; border-color: #2563eb; }
   </style>
 </head>
 <body class="text-gray-800 antialiased" dir="rtl">
@@ -41,17 +43,22 @@
       </a>
       
       <!-- desktop links -->
-      <div class="hidden md:flex space-x-2 space-x-reverse gap-8 font-medium text-gray-600">
-        <a href="#home" class="nav-link text-blue-600">الرئيسية</a>
-        <a href="#about" class="nav-link">من نحن</a>
-        <a href="#services" class="nav-link">خدماتنا</a>
-        <a href="#how" class="nav-link">آلية العمل</a>
-        <a href="#contact" class="nav-link">اتصل بنا</a>
+      <div class="hidden md:flex space-x-2 space-x-reverse gap-8 font-medium text-gray-600 items-center">
+        <a href="#home" class="nav-link text-blue-600" data-i18n="nav_home">الرئيسية</a>
+        <a href="#about" class="nav-link" data-i18n="nav_about">من نحن</a>
+        <a href="#services" class="nav-link" data-i18n="nav_services">خدماتنا</a>
+        <a href="#how" class="nav-link" data-i18n="nav_how">آلية العمل</a>
+        <a href="#contact" class="nav-link" data-i18n="nav_contact">اتصل بنا</a>
+        <div class="flex gap-1 border border-gray-200 rounded-full p-0.5 bg-gray-50">
+          <button type="button" class="lang-btn px-2.5 py-1 rounded-full text-xs font-medium" data-lang="ar" title="العربية">AR</button>
+          <button type="button" class="lang-btn px-2.5 py-1 rounded-full text-xs font-medium" data-lang="fr" title="Français">FR</button>
+          <button type="button" class="lang-btn px-2.5 py-1 rounded-full text-xs font-medium" data-lang="en" title="English">EN</button>
+        </div>
       </div>
 
       <!-- CTA & mobile button -->
       <div class="flex items-center gap-3">
-        <a href="#scan" class="hidden md:inline-block bg-blue-600 text-white px-5 py-2 rounded-full text-sm font-semibold shadow-md hover:bg-blue-700 transition shadow-lg hover:shadow-xl"> امسح منتجك</a>
+        <a href="#scan" class="hidden md:inline-block bg-blue-600 text-white px-5 py-2 rounded-full text-sm font-semibold shadow-md hover:bg-blue-700 transition shadow-lg hover:shadow-xl" data-i18n="nav_scan_btn">امسح منتجك</a>
         <!-- mobile menu button -->
         <button id="menuBtn" class="block md:hidden text-gray-600 text-2xl focus:outline-none">
           <i class="fas fa-bars"></i>
@@ -60,12 +67,17 @@
     </div>
     <!-- mobile menu dropdown (hidden by default) -->
     <div id="mobileMenu" class="hidden md:hidden bg-white border-t border-gray-100 py-4 px-6 flex flex-col gap-3 text-base font-medium">
-      <a href="#home" class="hover:text-blue-600 transition">الرئيسية</a>
-      <a href="#about" class="hover:text-blue-600 transition">من نحن</a>
-      <a href="#services" class="hover:text-blue-600 transition">خدماتنا</a>
-      <a href="#how" class="hover:text-blue-600 transition">آلية العمل</a>
-      <a href="#contact" class="hover:text-blue-600 transition">اتصل بنا</a>
-      <a href="#scan" class="bg-blue-50 text-blue-700 px-4 py-2 rounded-full text-center mt-2">امسح منتجك</a>
+      <a href="#home" class="hover:text-blue-600 transition" data-i18n="nav_home">الرئيسية</a>
+      <a href="#about" class="hover:text-blue-600 transition" data-i18n="nav_about">من نحن</a>
+      <a href="#services" class="hover:text-blue-600 transition" data-i18n="nav_services">خدماتنا</a>
+      <a href="#how" class="hover:text-blue-600 transition" data-i18n="nav_how">آلية العمل</a>
+      <a href="#contact" class="hover:text-blue-600 transition" data-i18n="nav_contact">اتصل بنا</a>
+      <div class="flex gap-2 mt-2">
+        <button type="button" class="lang-btn flex-1 py-2 rounded-full border text-sm" data-lang="ar">AR</button>
+        <button type="button" class="lang-btn flex-1 py-2 rounded-full border text-sm" data-lang="fr">FR</button>
+        <button type="button" class="lang-btn flex-1 py-2 rounded-full border text-sm" data-lang="en">EN</button>
+      </div>
+      <a href="#scan" class="bg-blue-50 text-blue-700 px-4 py-2 rounded-full text-center mt-2" data-i18n="nav_scan_btn">امسح منتجك</a>
     </div>
   </nav>
 
@@ -75,15 +87,15 @@
     <section id="home" class="py-10 md:py-16 fade-in">
       <div class="grid md:grid-cols-2 gap-12 items-center">
         <div>
-          <h1 class="text-4xl md:text-5xl lg:text-6xl font-black leading-tight text-gray-900">تحقق من منتجاتك <br> <span class="text-blue-600">في لحظات</span></h1>
-          <p class="text-lg text-gray-600 mt-6 leading-relaxed">باستخدام منصة <span class="font-bold text-blue-600">موثوق</span>، امسح رمز QR على أي منتج غذائي أو تجميلي لتعرف مدى أصالته وسلامته. نحن نحميك من المنتجات المغشوشة والخطرة.</p>
+          <h1 class="text-4xl md:text-5xl lg:text-6xl font-black leading-tight text-gray-900"><span data-i18n="hero_title">تحقق من منتجاتك</span> <br> <span class="text-blue-600" data-i18n="hero_title_highlight">في لحظات</span></h1>
+          <p class="text-lg text-gray-600 mt-6 leading-relaxed" data-i18n="hero_sub">باستخدام منصة موثوق، امسح رمز QR على أي منتج غذائي أو تجميلي لتعرف مدى أصالته وسلامته. نحن نحميك من المنتجات المغشوشة والخطرة.</p>
           <div class="flex flex-wrap gap-4 mt-8">
-            <a href="#scan" class="bg-blue-600 text-white px-8 py-4 rounded-full text-lg font-semibold shadow-xl hover:bg-blue-700 transition inline-flex items-center gap-2"><i class="fas fa-qrcode"></i> امسح المنتج الآن</a>
-            <a href="#how" class="border border-gray-300 bg-white px-8 py-4 rounded-full text-lg font-semibold text-gray-700 hover:border-blue-300 hover:text-blue-600 transition shadow-sm"> كيف تعمل</a>
+            <a href="#scan" class="bg-blue-600 text-white px-8 py-4 rounded-full text-lg font-semibold shadow-xl hover:bg-blue-700 transition inline-flex items-center gap-2"><i class="fas fa-qrcode"></i> <span data-i18n="hero_scan_btn">امسح المنتج الآن</span></a>
+            <a href="#how" class="border border-gray-300 bg-white px-8 py-4 rounded-full text-lg font-semibold text-gray-700 hover:border-blue-300 hover:text-blue-600 transition shadow-sm"><span data-i18n="hero_how_btn">كيف تعمل</span></a>
           </div>
           <div class="flex items-center gap-6 mt-8 text-sm text-gray-500">
-            <span><i class="fas fa-check-circle text-green-500 ml-1"></i> أكثر من 10 آلاف منتج موثّق</span>
-            <span><i class="fas fa-shield-alt text-blue-500 ml-1"></i> دقة عالية</span>
+            <span><i class="fas fa-check-circle text-green-500 ml-1"></i> <span data-i18n="hero_stat1">أكثر من 10 آلاف منتج موثّق</span></span>
+            <span><i class="fas fa-shield-alt text-blue-500 ml-1"></i> <span data-i18n="hero_stat2">دقة عالية</span></span>
           </div>
         </div>
         <!-- illustration: verification concept (card with QR) -->
@@ -116,9 +128,9 @@
     <!-- ===== قارئ QR ===== -->
     <section id="scan" class="py-16 border-t border-gray-200/60">
       <div class="text-center max-w-2xl mx-auto mb-10">
-        <span class="text-blue-600 font-semibold tracking-wider">الماسح الضوئي</span>
-        <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-4">امسح رمز QR للمنتج</h2>
-        <p class="text-gray-500">وجّه الكاميرا نحو رمز QR على العبوة للتحقق من المنتج</p>
+        <span class="text-blue-600 font-semibold tracking-wider" data-i18n="scan_badge">الماسح الضوئي</span>
+        <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-4" data-i18n="scan_title">امسح رمز QR للمنتج</h2>
+        <p class="text-gray-500" data-i18n="scan_sub">وجّه الكاميرا نحو رمز QR على العبوة للتحقق من المنتج</p>
       </div>
       <div class="max-w-md mx-auto">
         <div class="relative rounded-2xl overflow-hidden border-2 border-gray-200 bg-gray-900 shadow-xl" dir="ltr">
@@ -129,49 +141,47 @@
             </div>
             <div class="scanner-guide" aria-hidden="true"></div>
           </div>
-          <div id="scan-status" class="scan-status absolute bottom-0 left-0 right-0 py-2 px-3 bg-black/60 text-white text-center text-sm">
-            <i class="fas fa-qrcode ml-1"></i> جاري المسح... ضع رمز QR داخل الإطار
-          </div>
+          <div id="scan-status" class="scan-status absolute bottom-0 left-0 right-0 py-2 px-3 bg-black/60 text-white text-center text-sm"><span data-i18n="scan_status">جاري المسح... ضع رمز QR داخل الإطار</span></div>
         </div>
         <div id="scan-result" class="hidden mt-6">
           <div id="scan-result-product" class="hidden p-6 bg-white rounded-2xl shadow-lg border border-gray-100 text-right"></div>
           <div id="scan-result-raw" class="hidden p-6 bg-white rounded-2xl shadow-lg border border-gray-100">
-            <p class="text-sm font-medium text-gray-500 mb-1">نتيجة المسح:</p>
+            <p class="text-sm font-medium text-gray-500 mb-1" data-i18n="scan_result_label">نتيجة المسح:</p>
             <p id="scan-result-text" class="text-lg font-bold text-blue-600 break-all" dir="ltr"></p>
-            <p class="text-amber-600 text-sm mt-2"><i class="fas fa-info-circle ml-1"></i> المنتج غير مسجّل في قاعدة بيانات موثوق.</p>
+            <p class="text-amber-600 text-sm mt-2 scan-not-found-msg"><i class="fas fa-info-circle ml-1"></i> <span data-i18n="scan_not_found">المنتج غير مسجّل في قاعدة بيانات موثوق.</span></p>
           </div>
-          <button type="button" id="scan-again-btn" class="mt-4 w-full md:w-auto bg-blue-600 text-white px-6 py-3 rounded-full text-sm font-semibold hover:bg-blue-700 transition shadow-md">مسح رمز آخر</button>
+          <button type="button" id="scan-again-btn" class="mt-4 w-full md:w-auto bg-blue-600 text-white px-6 py-3 rounded-full text-sm font-semibold hover:bg-blue-700 transition shadow-md" data-i18n="scan_again_btn">مسح رمز آخر</button>
         </div>
         <div id="scan-error" class="hidden mt-4 p-4 bg-amber-50 border border-amber-200 rounded-2xl text-amber-800 text-sm">
           <p id="scan-error-msg" class="font-medium"></p>
           <p class="text-amber-700/80 mt-1 text-xs">تأكد من منح الموقع صلاحية الكاميرا أو جرّب متصفحاً آخر (Chrome / Edge).</p>
         </div>
-        <p class="text-center text-gray-400 text-sm mt-4"><i class="fas fa-camera ml-1"></i> يعمل أفضل على HTTPS أو localhost</p>
+        <p class="text-center text-gray-400 text-sm mt-4"><i class="fas fa-camera ml-1"></i> <span data-i18n="scan_camera_hint">يعمل أفضل على HTTPS أو localhost</span></p>
       </div>
     </section>
 
     <!-- How it works (summary) + Features combined -->
     <section class="py-16">
       <div class="text-center max-w-2xl mx-auto">
-        <span class="text-blue-600 font-semibold tracking-wider">منظومة متكاملة</span>
-        <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-4">كيف يعمل موثوق؟</h2>
-        <p class="text-gray-500">ثلاث خطوات بسيطة للحصول على معلومات دقيقة عن أي منتج</p>
+        <span class="text-blue-600 font-semibold tracking-wider" data-i18n="how_badge">منظومة متكاملة</span>
+        <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-4" data-i18n="how_title">كيف يعمل موثوق؟</h2>
+        <p class="text-gray-500" data-i18n="how_sub">ثلاث خطوات بسيطة للحصول على معلومات دقيقة عن أي منتج</p>
       </div>
       <div class="grid md:grid-cols-3 gap-8 mt-12">
         <div class="bg-white p-8 rounded-3xl shadow-md border border-gray-50 hover-lift text-center">
           <div class="bg-blue-100 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto text-blue-700 text-2xl">1</div>
-          <h3 class="text-xl font-bold mt-5">افتح الماسح</h3>
-          <p class="text-gray-500 mt-2">اضغط على زر المسح الضوئي داخل التطبيق أو الموقع.</p>
+          <h3 class="text-xl font-bold mt-5" data-i18n="how_step1_title">افتح الماسح</h3>
+          <p class="text-gray-500 mt-2" data-i18n="how_step1">اضغط على زر المسح الضوئي داخل التطبيق أو الموقع.</p>
         </div>
         <div class="bg-white p-8 rounded-3xl shadow-md border border-gray-50 hover-lift text-center">
           <div class="bg-blue-100 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto text-blue-700 text-2xl">2</div>
-          <h3 class="text-xl font-bold mt-5">امسح رمز QR</h3>
-          <p class="text-gray-500 mt-2">وجّه الكاميرا نحو الملصق الموجود على العبوة.</p>
+          <h3 class="text-xl font-bold mt-5" data-i18n="how_step2_title">امسح رمز QR</h3>
+          <p class="text-gray-500 mt-2" data-i18n="how_step2">وجّه الكاميرا نحو الملصق الموجود على العبوة.</p>
         </div>
         <div class="bg-white p-8 rounded-3xl shadow-md border border-gray-50 hover-lift text-center">
           <div class="bg-blue-100 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto text-blue-700 text-2xl">3</div>
-          <h3 class="text-xl font-bold mt-5">تحقق واطلع</h3>
-          <p class="text-gray-500 mt-2">تظهر لك معلومات شاملة: المكونات، المخاطر، وتعليمات الاستخدام.</p>
+          <h3 class="text-xl font-bold mt-5" data-i18n="how_step3_title">تحقق واطلع</h3>
+          <p class="text-gray-500 mt-2" data-i18n="how_step3">تظهر لك معلومات شاملة: المكونات، المخاطر، وتعليمات الاستخدام.</p>
         </div>
       </div>
     </section>
@@ -181,19 +191,19 @@
       <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex gap-4 items-start hover-lift">
           <i class="fas fa-check-circle text-3xl text-blue-500"></i>
-          <div><h4 class="font-bold">توثيق فوري</h4><p class="text-sm text-gray-500">نتائج خلال ثوانٍ</p></div>
+          <div><h4 class="font-bold" data-i18n="feat1_title">توثيق فوري</h4><p class="text-sm text-gray-500" data-i18n="feat1">نتائج خلال ثوانٍ</p></div>
         </div>
         <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex gap-4 items-start hover-lift">
           <i class="fas fa-clipboard-list text-3xl text-emerald-500"></i>
-          <div><h4 class="font-bold">تحليل المكونات</h4><p class="text-sm text-gray-500">تقرير شامل عن المواد</p></div>
+          <div><h4 class="font-bold" data-i18n="feat2_title">تحليل المكونات</h4><p class="text-sm text-gray-500" data-i18n="feat2">تقرير شامل عن المواد</p></div>
         </div>
         <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex gap-4 items-start hover-lift">
           <i class="fas fa-bell text-3xl text-amber-500"></i>
-          <div><h4 class="font-bold">تنبيهات السلامة</h4><p class="text-sm text-gray-500">حساسية، مواد ضارة</p></div>
+          <div><h4 class="font-bold" data-i18n="feat3_title">تنبيهات السلامة</h4><p class="text-sm text-gray-500" data-i18n="feat3">حساسية، مواد ضارة</p></div>
         </div>
         <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex gap-4 items-start hover-lift">
           <i class="fas fa-database text-3xl text-indigo-500"></i>
-          <div><h4 class="font-bold">معلومات موثقة</h4><p class="text-sm text-gray-500">قاعدة بيانات محدثة</p></div>
+          <div><h4 class="font-bold" data-i18n="feat4_title">معلومات موثقة</h4><p class="text-sm text-gray-500" data-i18n="feat4">قاعدة بيانات محدثة</p></div>
         </div>
       </div>
     </section>
@@ -202,18 +212,18 @@
     <section id="about" class="py-20 border-t border-gray-200/60">
       <div class="grid md:grid-cols-2 gap-16 items-center">
         <div>
-          <span class="text-blue-600 font-semibold">من نحن</span>
-          <h2 class="text-3xl md:text-4xl font-bold mt-2">نحو عالم بلا منتجات مغشوشة</h2>
-          <p class="text-gray-600 mt-6 leading-relaxed">موثوق منصة رقمية تهدف إلى حماية المستهلك العربي من مخاطر المنتجات غير الأصلية أو الضارة. نؤمن بأن لكل شخص الحق في معرفة ما يضعها على بشرته أو داخل جسده. انطلقنا من رؤية واضحة: <span class="font-semibold">الشفافية الكاملة</span> عبر تقنية المسح الضوئي.</p>
-          <p class="text-gray-600 mt-4 leading-relaxed">نعمل مع مختبرات وهيئات رقابية لنضمن لك معلومات دقيقة عن الآلاف من المنتجات الغذائية ومستحضرات التجميل. مهمتنا: <span class="bg-blue-50 px-2 py-1 rounded">ثقة المستهلك أولاً</span>.</p>
+          <span class="text-blue-600 font-semibold" data-i18n="about_badge">من نحن</span>
+          <h2 class="text-3xl md:text-4xl font-bold mt-2" data-i18n="about_title">نحو عالم بلا منتجات مغشوشة</h2>
+          <p class="text-gray-600 mt-6 leading-relaxed" data-i18n="about_p1">موثوق منصة رقمية تهدف إلى حماية المستهلك العربي من مخاطر المنتجات غير الأصلية أو الضارة. نؤمن بأن لكل شخص الحق في معرفة ما يضعها على بشرته أو داخل جسده. انطلقنا من رؤية واضحة: الشفافية الكاملة عبر تقنية المسح الضوئي.</p>
+          <p class="text-gray-600 mt-4 leading-relaxed" data-i18n="about_p2">نعمل مع مختبرات وهيئات رقابية لنضمن لك معلومات دقيقة عن الآلاف من المنتجات الغذائية ومستحضرات التجميل. مهمتنا: ثقة المستهلك أولاً.</p>
         </div>
         <div class="bg-blue-50 p-10 rounded-3xl relative">
           <i class="fas fa-quote-right text-6xl text-blue-200 absolute top-4 left-4"></i>
           <div class="relative z-10">
-            <p class="text-xl font-medium">"نحن لا نكتفي بالكشف عن الغش، بل نُعلم المستهلك كيف يقرأ الملصقات ويحمي نفسه."</p>
+            <p class="text-xl font-medium" data-i18n="about_quote">"نحن لا نكتفي بالكشف عن الغش، بل نُعلم المستهلك كيف يقرأ الملصقات ويحمي نفسه."</p>
             <div class="flex items-center gap-3 mt-6">
-              <div class="w-12 h-12 bg-blue-200 rounded-full flex items-center justify-center text-blue-800 font-bold text-xl">ن</div>
-              <div><p class="font-bold">نورة السعد</p><p class="text-sm text-gray-500">المؤسسة والرئيسة التنفيذية</p></div>
+              <div class="w-12 h-12 bg-blue-200 rounded-full flex items-center justify-center text-blue-800 font-bold text-xl">ر</div>
+              <div><p class="font-bold" data-i18n="about_ceo">نورة السعد</p><p class="text-sm text-gray-500" data-i18n="about_ceo_role">المؤسسة والرئيسة التنفيذية</p></div>
             </div>
           </div>
         </div>
@@ -223,29 +233,29 @@
     <!-- ===== 3. OUR SERVICES ===== -->
     <section id="services" class="py-20 border-t border-gray-200/60">
       <div class="text-center max-w-2xl mx-auto">
-        <h2 class="text-3xl md:text-4xl font-bold">خدمات موثوق</h2>
-        <p class="text-gray-500 mt-3">نقدم أكثر من مجرد مسح QR</p>
+        <h2 class="text-3xl md:text-4xl font-bold" data-i18n="services_title">خدمات موثوق</h2>
+        <p class="text-gray-500 mt-3" data-i18n="services_sub">نقدم أكثر من مجرد مسح QR</p>
       </div>
       <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-16">
         <div class="bg-white p-8 rounded-3xl shadow-md hover-lift text-center">
           <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto text-blue-600 text-2xl"><i class="fas fa-check-double"></i></div>
-          <h3 class="font-bold text-xl mt-5">التحقق من الأصالة</h3>
-          <p class="text-gray-500 mt-3 text-sm">نتأكد أن المنتج ليس مقلداً عبر مطابقة الرمز مع قاعدة البيانات.</p>
+          <h3 class="font-bold text-xl mt-5" data-i18n="feat1_title">التحقق من الأصالة</h3>
+          <p class="text-gray-500 mt-3 text-sm" data-i18n="feat1">نتائج خلال ثوانٍ</p>
         </div>
         <div class="bg-white p-8 rounded-3xl shadow-md hover-lift text-center">
           <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto text-emerald-600 text-2xl"><i class="fas fa-flask"></i></div>
-          <h3 class="font-bold text-xl mt-5">تحليل المكونات</h3>
-          <p class="text-gray-500 mt-3 text-sm">تفسير كل مادة كيميائية ومستوى خطورتها حسب الهيئات الصحية.</p>
+          <h3 class="font-bold text-xl mt-5" data-i18n="feat2_title">تحليل المكونات</h3>
+          <p class="text-gray-500 mt-3 text-sm" data-i18n="feat2">تقرير شامل عن المواد</p>
         </div>
         <div class="bg-white p-8 rounded-3xl shadow-md hover-lift text-center">
           <div class="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto text-amber-600 text-2xl"><i class="fas fa-exclamation-triangle"></i></div>
-          <h3 class="font-bold text-xl mt-5">تنبيهات السلامة</h3>
-          <p class="text-gray-500 mt-3 text-sm">إشعارات فورية إذا احتوى المنتج على مسببات حساسية أو مواد محظورة.</p>
+          <h3 class="font-bold text-xl mt-5" data-i18n="feat3_title">تنبيهات السلامة</h3>
+          <p class="text-gray-500 mt-3 text-sm" data-i18n="feat3">حساسية، مواد ضارة</p>
         </div>
         <div class="bg-white p-8 rounded-3xl shadow-md hover-lift text-center">
           <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto text-purple-600 text-2xl"><i class="fas fa-info-circle"></i></div>
-          <h3 class="font-bold text-xl mt-5">معلومات شاملة</h3>
-          <p class="text-gray-500 mt-3 text-sm">طريقة الاستخدام، تاريخ الإنتاج، انتهاء الصلاحية، وتقييم المستخدمين.</p>
+          <h3 class="font-bold text-xl mt-5" data-i18n="feat4_title">معلومات موثقة</h3>
+          <p class="text-gray-500 mt-3 text-sm" data-i18n="feat4">قاعدة بيانات محدثة</p>
         </div>
       </div>
     </section>
@@ -276,8 +286,8 @@
     <section id="contact" class="py-20 border-t border-gray-200/60">
       <div class="grid md:grid-cols-2 gap-12">
         <div>
-          <h2 class="text-3xl font-bold">تواصل مع فريق موثوق</h2>
-          <p class="text-gray-500 mt-4">نحن هنا للإجابة عن استفساراتك، اقتراحاتك، أو للإبلاغ عن منتج.</p>
+          <h2 class="text-3xl font-bold" data-i18n="contact_title">تواصل مع فريق موثوق</h2>
+          <p class="text-gray-500 mt-4" data-i18n="contact_sub">نحن هنا للإجابة عن استفساراتك، اقتراحاتك، أو للإبلاغ عن منتج.</p>
           <div class="mt-10 space-y-4">
             <div class="flex items-center gap-4 text-gray-600"><i class="fas fa-map-pin text-blue-500 w-6"></i> <span>غرداية، الجزائر</span></div>
             <div class="flex items-center gap-4 text-gray-600"><i class="fas fa-phone-alt text-blue-500 w-6"></i> <span dir="ltr">+213 675 47 85 49</span></div>
@@ -293,18 +303,18 @@
         <div class="bg-white p-8 rounded-3xl shadow-lg border border-gray-100">
           <form action="#" method="post" class="space-y-5">
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">الاسم الكامل</label>
-              <input type="text" placeholder="مثال: سارة أحمد" class="w-full border border-gray-200 rounded-2xl p-4 focus:ring-2 focus:ring-blue-200 outline-none transition">
+              <label class="block text-sm font-medium text-gray-700 mb-1" data-i18n="contact_name">الاسم الكامل</label>
+              <input type="text" data-i18n-placeholder="contact_placeholder_name" placeholder="مثال: سارة أحمد" class="w-full border border-gray-200 rounded-2xl p-4 focus:ring-2 focus:ring-blue-200 outline-none transition">
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">البريد الإلكتروني</label>
+              <label class="block text-sm font-medium text-gray-700 mb-1" data-i18n="contact_email">البريد الإلكتروني</label>
               <input type="email" placeholder="sara@example.com" class="w-full border border-gray-200 rounded-2xl p-4 focus:ring-2 focus:ring-blue-200 outline-none transition">
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">الرسالة</label>
-              <textarea rows="4" placeholder="كيف يمكننا مساعدتك؟" class="w-full border border-gray-200 rounded-2xl p-4 focus:ring-2 focus:ring-blue-200 outline-none transition"></textarea>
+              <label class="block text-sm font-medium text-gray-700 mb-1" data-i18n="contact_message">الرسالة</label>
+              <textarea rows="4" data-i18n-placeholder="contact_placeholder_msg" placeholder="كيف يمكننا مساعدتك؟" class="w-full border border-gray-200 rounded-2xl p-4 focus:ring-2 focus:ring-blue-200 outline-none transition"></textarea>
             </div>
-            <button class="bg-blue-600 text-white w-full py-4 rounded-2xl text-lg font-semibold hover:bg-blue-700 transition shadow-lg">إرسال الرسالة</button>
+            <button type="submit" class="bg-blue-600 text-white w-full py-4 rounded-2xl text-lg font-semibold hover:bg-blue-700 transition shadow-lg" data-i18n="contact_send">إرسال الرسالة</button>
           </form>
         </div>
       </div>
@@ -313,10 +323,10 @@
     <!-- CTA section before footer -->
     <section class="my-16 bg-gradient-to-l from-blue-600 to-indigo-700 text-white p-12 md:p-16 rounded-4xl shadow-2xl rounded-3xl">
       <div class="text-center max-w-3xl mx-auto">
-        <h3 class="text-3xl md:text-4xl font-bold">احمِ نفسك وعائلتك اليوم</h3>
-        <p class="text-blue-100 mt-4 text-lg">جرّب موثوق مجاناً، وامسح أي منتج لتعرف حقيقته.</p>
-        <a href="#scan" class="inline-block mt-8 bg-white text-blue-700 px-10 py-4 rounded-full text-xl font-bold shadow-2xl hover:bg-gray-100 transition">ابدأ المسح الآن</a>
-        <p class="text-sm text-blue-200 mt-6">لا تحتاج تحميل · يعمل مباشرة من المتصفح</p>
+        <h3 class="text-3xl md:text-4xl font-bold" data-i18n="cta_title">احمِ نفسك وعائلتك اليوم</h3>
+        <p class="text-blue-100 mt-4 text-lg" data-i18n="cta_sub">جرّب موثوق مجاناً، وامسح أي منتج لتعرف حقيقته.</p>
+        <a href="#scan" class="inline-block mt-8 bg-white text-blue-700 px-10 py-4 rounded-full text-xl font-bold shadow-2xl hover:bg-gray-100 transition" data-i18n="cta_btn">ابدأ المسح الآن</a>
+        <p class="text-sm text-blue-200 mt-6" data-i18n="cta_hint">لا تحتاج تحميل · يعمل مباشرة من المتصفح</p>
       </div>
     </section>
   </main>
@@ -327,7 +337,7 @@
       <div class="grid grid-cols-1 md:grid-cols-5 gap-10">
         <div class="md:col-span-2">
           <span class="text-3xl font-extrabold text-blue-600">موثوق</span>
-          <p class="text-gray-500 mt-4 text-sm leading-relaxed">منصة التحقق الذكية للمنتجات. نضمن لك أصالة وسلامة ما تستهلكه.</p>
+          <p class="text-gray-500 mt-4 text-sm leading-relaxed" data-i18n="footer_tagline">منصة التحقق الذكية للمنتجات. نضمن لك أصالة وسلامة ما تستهلكه.</p>
           <div class="flex gap-4 mt-6 text-xl">
             <a href="#" class="text-gray-400 hover:text-blue-600"><i class="fab fa-x-twitter"></i></a>
             <a href="#" class="text-gray-400 hover:text-blue-600"><i class="fab fa-linkedin-in"></i></a>
@@ -335,24 +345,24 @@
           </div>
         </div>
         <div>
-          <h5 class="font-bold text-gray-900 mb-4">الشركة</h5>
+          <h5 class="font-bold text-gray-900 mb-4" data-i18n="footer_company">الشركة</h5>
           <ul class="space-y-2 text-gray-500 text-sm">
-            <li><a href="#about" class="hover:text-blue-600">من نحن</a></li>
-            <li><a href="#services" class="hover:text-blue-600">خدماتنا</a></li>
-            <li><a href="#contact" class="hover:text-blue-600">اتصل بنا</a></li>
-            <li><a href="#" class="hover:text-blue-600">الوظائف</a></li>
+            <li><a href="#about" class="hover:text-blue-600" data-i18n="nav_about">من نحن</a></li>
+            <li><a href="#services" class="hover:text-blue-600" data-i18n="nav_services">خدماتنا</a></li>
+            <li><a href="#contact" class="hover:text-blue-600" data-i18n="nav_contact">اتصل بنا</a></li>
+            <li><a href="#" class="hover:text-blue-600" data-i18n="footer_jobs">الوظائف</a></li>
           </ul>
         </div>
         <div>
-          <h5 class="font-bold text-gray-900 mb-4">الدعم</h5>
+          <h5 class="font-bold text-gray-900 mb-4" data-i18n="footer_support">الدعم</h5>
           <ul class="space-y-2 text-gray-500 text-sm">
-            <li><a href="#" class="hover:text-blue-600">الأسئلة الشائعة</a></li>
-            <li><a href="#" class="hover:text-blue-600">سياسة الخصوصية</a></li>
-            <li><a href="#" class="hover:text-blue-600">شروط الاستخدام</a></li>
+            <li><a href="#" class="hover:text-blue-600" data-i18n="footer_faq">الأسئلة الشائعة</a></li>
+            <li><a href="#" class="hover:text-blue-600" data-i18n="footer_privacy">سياسة الخصوصية</a></li>
+            <li><a href="#" class="hover:text-blue-600" data-i18n="footer_terms">شروط الاستخدام</a></li>
           </ul>
         </div>
         <div>
-          <h5 class="font-bold text-gray-900 mb-4">التنزيل</h5>
+          <h5 class="font-bold text-gray-900 mb-4" data-i18n="footer_download">التنزيل</h5>
           <ul class="space-y-2 text-gray-500 text-sm">
             <li><a href="#" class="hover:text-blue-600"><i class="fab fa-apple ml-1"></i> App Store</a></li>
             <li><a href="#" class="hover:text-blue-600"><i class="fab fa-google-play ml-1"></i> Google Play</a></li>
@@ -360,11 +370,34 @@
         </div>
       </div>
       <div class="border-t border-gray-100 mt-14 pt-6 text-center text-gray-400 text-sm">
-        © 2025 موثوق - منصة التوثيق الذكية. جميع الحقوق محفوظة.
+        <span data-i18n="footer_copyright">© 2025 موثوق - منصة التوثيق الذكية. جميع الحقوق محفوظة.</span>
       </div>
     </div>
   </footer>
 
+  <!-- تطبيق اللغة عند التحميل وأزرار التبديل -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var lang = window.MAWTHOOQ_LANG || 'ar';
+      if (typeof mawthooqApplyLang === 'function') mawthooqApplyLang(lang);
+      function setActiveLangBtn() {
+        var L = window.MAWTHOOQ_LANG || 'ar';
+        document.querySelectorAll('.lang-btn').forEach(function(btn) {
+          btn.classList.toggle('active', btn.getAttribute('data-lang') === L);
+        });
+      }
+      setActiveLangBtn();
+      document.querySelectorAll('.lang-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var l = this.getAttribute('data-lang');
+          if (l && typeof mawthooqApplyLang === 'function') {
+            mawthooqApplyLang(l);
+            setActiveLangBtn();
+          }
+        });
+      });
+    });
+  </script>
   <!-- قاعدة بيانات المنتجات (يمكنك تعديل products.js) -->
   <script src="products.js"></script>
   <!-- jsQR: يعمل بشكل موثوق على iPhone و Safari -->
@@ -387,6 +420,7 @@
       var resultEl = document.getElementById('scan-result');
       var resultProductEl = document.getElementById('scan-result-product');
       var resultRawEl = document.getElementById('scan-result-raw');
+      var lastDisplayedProduct = null;
       var resultText = document.getElementById('scan-result-text');
       var scanAgainBtn = document.getElementById('scan-again-btn');
       var errorEl = document.getElementById('scan-error');
@@ -422,34 +456,39 @@
         return '<div class="' + bg + ' rounded-xl p-4 mt-3 border border-gray-100"><p class="text-sm font-semibold text-gray-800 mb-2">' + icon + ' ' + title + '</p><p class="text-gray-700 text-sm leading-relaxed">' + content + '</p></div>';
       }
       function renderProductCard(p) {
-        var name = p.nameAr || p.nameFr || p.name || p.id;
+        var L = window.MAWTHOOQ_LANG || 'ar';
+        var T = (window.MAWTHOOQ_T && window.MAWTHOOQ_T[L]) ? window.MAWTHOOQ_T[L] : window.MAWTHOOQ_T.ar;
+        var name = (L === 'ar' && p.nameAr) ? p.nameAr : (L === 'fr' && p.nameFr) ? p.nameFr : (p.name || p.nameEn || p.nameAr || p.nameFr || p.id);
         var brand = p.brand ? '<p class="text-gray-500 text-sm mt-1">' + p.brand + '</p>' : '';
         var statusClass = (p.status === 'original') ? 'bg-green-100 text-green-700' : (p.status === 'not_original') ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700';
-        var statusText = (p.status === 'original') ? '✔ أصلي' : (p.status === 'not_original') ? 'غير أصلي' : 'غير معروف';
+        var statusText = (p.status === 'original') ? (T.product_original || '✔ أصلي') : (p.status === 'not_original') ? (T.product_not_original || 'غير أصلي') : (T.product_unknown || 'غير معروف');
         var img = p.image ? '<img src="' + p.image + '" alt="" class="w-full h-52 object-cover rounded-t-2xl">' : '';
         var desc = p.description ? '<p class="text-gray-600 leading-relaxed text-sm">' + p.description + '</p>' : '';
-        var ing = p.ingredients ? section('المكونات', '<i class="fas fa-flask text-blue-500"></i>', p.ingredients) : '';
-        var warn = p.warnings ? section('تحذيرات', '<i class="fas fa-exclamation-triangle text-amber-500"></i>', p.warnings, 'bg-amber-50') : '';
-        var batch = p.batch ? '<p class="text-gray-500 text-xs mt-2" dir="ltr">رقم الدفعة: ' + p.batch + '</p>' : '';
-        var instructions = p.instructions ? section('تعليمات الاستخدام', '<i class="fas fa-list-ol text-blue-500"></i>', p.instructions, 'bg-blue-50') : '';
-        var usageTimes = p.usageTimes ? section('أوقات الاستعمال', '<i class="fas fa-clock text-indigo-500"></i>', p.usageTimes) : '';
-        var risks = p.risks ? section('مخاطر محتملة', '<i class="fas fa-shield-alt text-red-500"></i>', p.risks, 'bg-red-50') : '';
-        var storage = p.storage ? section('طريقة التخزين', '<i class="fas fa-box-open text-gray-600"></i>', p.storage) : '';
-        var expiry = p.expiryAfterOpen ? section('الصلاحية بعد الفتح', '<i class="fas fa-calendar-check text-emerald-600"></i>', p.expiryAfterOpen) : '';
-        var skinTypes = p.skinTypes ? section('أنواع البشرة المناسبة', '<i class="fas fa-hand-sparkles text-pink-500"></i>', p.skinTypes) : '';
-        var volume = p.volume ? '<p class="text-sm text-gray-600 mt-2"><i class="fas fa-weight-hanging text-gray-400 ml-1"></i> الحجم: ' + p.volume + '</p>' : '';
-        var contraindications = p.contraindications ? section('موانع الاستخدام', '<i class="fas fa-ban text-red-600"></i>', p.contraindications, 'bg-red-50') : '';
-        var benefits = p.benefits ? section('الفوائد', '<i class="fas fa-check-circle text-green-600"></i>', p.benefits, 'bg-green-50') : '';
-        var benefitsNote = p.benefitsNote ? section('تنبيه', '<i class="fas fa-info-circle text-amber-600"></i>', p.benefitsNote, 'bg-amber-50') : '';
+        var ing = p.ingredients ? section(T.product_ingredients || 'المكونات', '<i class="fas fa-flask text-blue-500"></i>', p.ingredients) : '';
+        var warn = p.warnings ? section(T.product_warnings || 'تحذيرات', '<i class="fas fa-exclamation-triangle text-amber-500"></i>', p.warnings, 'bg-amber-50') : '';
+        var batch = p.batch ? '<p class="text-gray-500 text-xs mt-2" dir="ltr">' + (T.batch_label || 'رقم الدفعة') + ': ' + p.batch + '</p>' : '';
+        var instructions = p.instructions ? section(T.product_instructions || 'تعليمات الاستخدام', '<i class="fas fa-list-ol text-blue-500"></i>', p.instructions, 'bg-blue-50') : '';
+        var usageTimes = p.usageTimes ? section(T.product_usage_times || 'أوقات الاستعمال', '<i class="fas fa-clock text-indigo-500"></i>', p.usageTimes) : '';
+        var risks = p.risks ? section(T.product_risks || 'مخاطر محتملة', '<i class="fas fa-shield-alt text-red-500"></i>', p.risks, 'bg-red-50') : '';
+        var storage = p.storage ? section(T.product_storage || 'طريقة التخزين', '<i class="fas fa-box-open text-gray-600"></i>', p.storage) : '';
+        var expiry = p.expiryAfterOpen ? section(T.product_expiry || 'الصلاحية بعد الفتح', '<i class="fas fa-calendar-check text-emerald-600"></i>', p.expiryAfterOpen) : '';
+        var skinTypes = p.skinTypes ? section(T.product_skin_types || 'أنواع البشرة المناسبة', '<i class="fas fa-hand-sparkles text-pink-500"></i>', p.skinTypes) : '';
+        var volLabel = T.product_volume || 'الحجم';
+        var volume = p.volume ? '<p class="text-sm text-gray-600 mt-2"><i class="fas fa-weight-hanging text-gray-400 ml-1"></i> ' + volLabel + ': ' + p.volume + '</p>' : '';
+        var contraindications = p.contraindications ? section(T.product_contraindications || 'موانع الاستخدام', '<i class="fas fa-ban text-red-600"></i>', p.contraindications, 'bg-red-50') : '';
+        var benefits = p.benefits ? section(T.product_benefits || 'الفوائد', '<i class="fas fa-check-circle text-green-600"></i>', p.benefits, 'bg-green-50') : '';
+        var benefitsNote = p.benefitsNote ? section(T.product_alert || 'تنبيه', '<i class="fas fa-info-circle text-amber-600"></i>', p.benefitsNote, 'bg-amber-50') : '';
+        var statusLabel = T.product_status || 'حالة المنتج';
+        var descLabel = T.product_description || 'الوصف';
         return '<div class="product-detail-card rounded-2xl overflow-hidden border border-gray-100 shadow-lg">' + img +
           '<div class="p-5">' +
           '<div class="flex justify-between items-start flex-wrap gap-2">' +
           '<h2 class="text-xl font-bold text-gray-900">' + name + '</h2>' +
           '<span class="' + statusClass + ' px-4 py-2 rounded-full text-sm font-semibold">' + statusText + '</span>' +
           '</div>' +
-          '<p class="text-xs font-medium text-gray-500 mt-1">حالة المنتج</p>' +
+          '<p class="text-xs font-medium text-gray-500 mt-1">' + statusLabel + '</p>' +
           brand + volume + batch +
-          '<div class="mt-4"><p class="text-xs font-semibold text-gray-500 mb-1">الوصف</p>' + desc + '</div>' +
+          '<div class="mt-4"><p class="text-xs font-semibold text-gray-500 mb-1">' + descLabel + '</p>' + desc + '</div>' +
           benefits + benefitsNote + usageTimes + instructions + ing + skinTypes + expiry + storage + contraindications + risks + warn +
           '</div></div>';
       }
@@ -470,10 +509,12 @@
 
         var product = getProductFromDecodedText(decodedText);
         if (product) {
+          lastDisplayedProduct = product;
           resultProductEl.innerHTML = renderProductCard(product);
           resultProductEl.classList.remove('hidden');
           resultRawEl.classList.add('hidden');
         } else {
+          lastDisplayedProduct = null;
           resultText.textContent = decodedText;
           resultRawEl.classList.remove('hidden');
           resultProductEl.classList.add('hidden');
@@ -596,6 +637,12 @@
         });
       }, { threshold: 0.25 });
       observer.observe(scanSection);
+
+      window.mawthooqOnLangChange = function() {
+        if (lastDisplayedProduct && resultProductEl && !resultProductEl.classList.contains('hidden')) {
+          resultProductEl.innerHTML = renderProductCard(lastDisplayedProduct);
+        }
+      };
 
       if (window.location.hash === '#scan') setTimeout(startScanner, 400);
     })();
