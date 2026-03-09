@@ -402,6 +402,8 @@
   <script src="products.js"></script>
   <!-- jsQR: يعمل بشكل موثوق على iPhone و Safari -->
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+  <!-- ZXing: لقراءة QR و barcodes (مثل EAN-13) -->
+  <script src="https://unpkg.com/@zxing/library@0.20.0"></script>
   <script>
     (function() {
       'use strict';
@@ -532,6 +534,35 @@
         if (scanStatusEl) scanStatusEl.style.display = show ? 'block' : 'none';
       }
 
+      var zxReader = null;
+
+      function decodeWithZXing(imageData, w, h) {
+        if (!window.ZXing || !imageData) return null;
+        try {
+          if (!zxReader) {
+            zxReader = new ZXing.MultiFormatReader();
+            var hints = new ZXing.Map();
+            hints.set(ZXing.DecodeHintType.POSSIBLE_FORMATS, [
+              ZXing.BarcodeFormat.QR_CODE,
+              ZXing.BarcodeFormat.EAN_13,
+              ZXing.BarcodeFormat.EAN_8,
+              ZXing.BarcodeFormat.CODE_128
+            ]);
+            zxReader.setHints(hints);
+          }
+          var luminanceSource = new ZXing.RGBLuminanceSource(imageData.data, w, h);
+          var binaryBitmap = new ZXing.BinaryBitmap(new ZXing.HybridBinarizer(luminanceSource));
+          var result = zxReader.decode(binaryBitmap);
+          return result && result.getText ? result.getText() : null;
+        } catch (e) {
+          return null;
+        } finally {
+          if (zxReader) {
+            try { zxReader.reset(); } catch (e2) {}
+          }
+        }
+      }
+
       function tick() {
         if (!isScanning || !videoEl || videoEl.readyState !== videoEl.HAVE_ENOUGH_DATA) {
           scanRaf = requestAnimationFrame(tick);
@@ -552,8 +583,15 @@
         }
         ctx.drawImage(videoEl, 0, 0);
         var imageData = ctx.getImageData(0, 0, w, h);
-        var code = window.jsQR ? window.jsQR(imageData.data, w, h, { inversionAttempts: 'attemptBoth' }) : null;
-        if (code && code.data) onScanSuccess(code.data);
+        var decoded = null;
+        if (window.jsQR) {
+          var code = window.jsQR(imageData.data, w, h, { inversionAttempts: 'attemptBoth' });
+          if (code && code.data) decoded = code.data;
+        }
+        if (!decoded) {
+          decoded = decodeWithZXing(imageData, w, h);
+        }
+        if (decoded) onScanSuccess(decoded);
         scanRaf = requestAnimationFrame(tick);
       }
 
@@ -583,8 +621,8 @@
           showError('المتصفح لا يدعم الكاميرا. استخدم Chrome أو Safari على جهازك.');
           return;
         }
-        if (!window.jsQR) {
-          showError('لم يتم تحميل مكتبة المسح. تحقق من الاتصال بالإنترنت.');
+        if (!window.jsQR && !window.ZXing) {
+          showError('لم يتم تحميل مكتبات المسح. تحقق من الاتصال بالإنترنت.');
           return;
         }
 
