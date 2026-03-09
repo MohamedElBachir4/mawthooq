@@ -58,7 +58,7 @@
 
       <!-- CTA & mobile button -->
       <div class="flex items-center gap-3">
-        <a href="#scan" class="hidden md:inline-block bg-blue-600 text-white px-5 py-2 rounded-full text-sm font-semibold shadow-md hover:bg-blue-700 transition shadow-lg hover:shadow-xl" data-i18n="nav_scan_btn">امسح منتجك</a>
+        <a href="#scan" class="scan-trigger hidden md:inline-block bg-blue-600 text-white px-5 py-2 rounded-full text-sm font-semibold shadow-md hover:bg-blue-700 transition shadow-lg hover:shadow-xl" data-i18n="nav_scan_btn">امسح منتجك</a>
         <!-- mobile menu button -->
         <button id="menuBtn" class="block md:hidden text-gray-600 text-2xl focus:outline-none">
           <i class="fas fa-bars"></i>
@@ -77,7 +77,7 @@
         <button type="button" class="lang-btn flex-1 py-2 rounded-full border text-sm" data-lang="fr">FR</button>
         <button type="button" class="lang-btn flex-1 py-2 rounded-full border text-sm" data-lang="en">EN</button>
       </div>
-      <a href="#scan" class="bg-blue-50 text-blue-700 px-4 py-2 rounded-full text-center mt-2" data-i18n="nav_scan_btn">امسح منتجك</a>
+      <a href="#scan" class="scan-trigger bg-blue-50 text-blue-700 px-4 py-2 rounded-full text-center mt-2" data-i18n="nav_scan_btn">امسح منتجك</a>
     </div>
   </nav>
 
@@ -90,7 +90,7 @@
           <h1 class="text-4xl md:text-5xl lg:text-6xl font-black leading-tight text-gray-900"><span data-i18n="hero_title">تحقق من منتجاتك</span> <br> <span class="text-blue-600" data-i18n="hero_title_highlight">في لحظات</span></h1>
           <p class="text-lg text-gray-600 mt-6 leading-relaxed" data-i18n="hero_sub">باستخدام منصة موثوق، امسح رمز QR على أي منتج غذائي أو تجميلي لتعرف مدى أصالته وسلامته. نحن نحميك من المنتجات المغشوشة والخطرة.</p>
           <div class="flex flex-wrap gap-4 mt-8">
-            <a href="#scan" class="bg-blue-600 text-white px-8 py-4 rounded-full text-lg font-semibold shadow-xl hover:bg-blue-700 transition inline-flex items-center gap-2"><i class="fas fa-qrcode"></i> <span data-i18n="hero_scan_btn">امسح المنتج الآن</span></a>
+            <a href="#scan" class="scan-trigger bg-blue-600 text-white px-8 py-4 rounded-full text-lg font-semibold shadow-xl hover:bg-blue-700 transition inline-flex items-center gap-2"><i class="fas fa-qrcode"></i> <span data-i18n="hero_scan_btn">امسح المنتج الآن</span></a>
             <a href="#how" class="border border-gray-300 bg-white px-8 py-4 rounded-full text-lg font-semibold text-gray-700 hover:border-blue-300 hover:text-blue-600 transition shadow-sm"><span data-i18n="hero_how_btn">كيف تعمل</span></a>
           </div>
           <div class="flex items-center gap-6 mt-8 text-sm text-gray-500">
@@ -124,6 +124,66 @@
         </div>
       </div>
     </section>
+
+    <!-- ===== PLANS MODAL (first-time before scanning) ===== -->
+    <div id="plans-modal" class="fixed inset-0 bg-black/50 z-40 hidden items-end md:items-center justify-center px-3 pb-4 md:px-4 md:pb-0">
+      <div class="bg-white rounded-3xl max-w-xl w-full shadow-2xl p-5 md:p-8 relative max-h-[90vh] overflow-y-auto">
+        <button type="button" id="plans-close-btn" class="absolute top-3 left-3 text-gray-400 hover:text-gray-600">
+          <i class="fas fa-times text-lg"></i>
+        </button>
+        <div class="text-center mb-6">
+          <h2 class="text-2xl md:text-3xl font-bold mb-2">اختر خطة الاستخدام</h2>
+          <p class="text-gray-500 text-sm md:text-base">قبل بدء المسح لأول مرة، اختر الخطة المناسبة لك. يمكنك تغييرها لاحقاً.</p>
+        </div>
+        <div class="grid md:grid-cols-3 gap-4 md:gap-6">
+          <!-- Plan 1 -->
+          <div class="border border-gray-200 rounded-2xl p-4 flex flex-col">
+            <h3 class="font-bold text-lg mb-1">الخطة المجانية</h3>
+            <p class="text-sm text-gray-500 mb-3">استخدم التطبيق مجاناً لمدة 7 أيام.</p>
+            <p class="text-2xl font-extrabold text-blue-600 mb-4">0 دج</p>
+            <ul class="text-xs text-gray-500 space-y-1 mb-4">
+              <li>مسح عدد محدود من المنتجات</li>
+              <li>عرض تفاصيل سلامة المنتج</li>
+            </ul>
+            <button type="button" class="plan-select-btn mt-auto bg-blue-50 text-blue-700 rounded-full py-2 text-sm font-semibold hover:bg-blue-100" data-plan="free">ابدأ بالخطة المجانية</button>
+          </div>
+          <!-- Plan 2 -->
+          <div class="border border-blue-300 rounded-2xl p-4 flex flex-col bg-blue-50/40">
+            <div class="flex items-center justify-between mb-1">
+              <h3 class="font-bold text-lg">الخطة الشهرية</h3>
+              <span class="text-xs bg-blue-600 text-white px-2 py-0.5 rounded-full">الأكثر شيوعاً</span>
+            </div>
+            <p class="text-sm text-gray-600 mb-3">اشتراك بـ 2000 دج شهرياً.</p>
+            <p class="text-2xl font-extrabold text-blue-700 mb-1">2000 دج</p>
+            <p class="text-xs text-gray-500 mb-4">يتم التجديد شهرياً.</p>
+            <ul class="text-xs text-gray-600 space-y-1 mb-4">
+              <li>مسح غير محدود للمنتجات</li>
+              <li>تنبيهات فورية حول المخاطر</li>
+              <li>دعم فني أساسي</li>
+            </ul>
+            <button type="button" class="plan-select-btn mt-auto bg-blue-600 text-white rounded-full py-2 text-sm font-semibold hover:bg-blue-700" data-plan="monthly">اختر الخطة الشهرية</button>
+          </div>
+          <!-- Plan 3 -->
+          <div class="border border-gray-200 rounded-2xl p-4 flex flex-col">
+            <h3 class="font-bold text-lg mb-1">الخطة السنوية</h3>
+            <p class="text-sm text-gray-500 mb-3">اشتراك سنوي بـ 18000 دج.</p>
+            <p class="text-2xl font-extrabold text-emerald-600 mb-1">18000 دج</p>
+            <p class="text-xs text-gray-500 mb-4">توفير مقارنة مع الدفع الشهري.</p>
+            <ul class="text-xs text-gray-500 space-y-1 mb-4">
+              <li>مسح غير محدود للمنتجات طوال السنة</li>
+              <li>أولوية في الدعم الفني</li>
+              <li>مزايا وتقارير إضافية مستقبلاً</li>
+            </ul>
+            <button type="button" class="plan-select-btn mt-auto bg-emerald-50 text-emerald-700 rounded-full py-2 text-sm font-semibold hover:bg-emerald-100" data-plan="yearly">اختر الخطة السنوية</button>
+          </div>
+        </div>
+        <div class="mt-5 text-center">
+          <button type="button" id="plans-continue-btn" class="text-sm text-gray-500 hover:text-gray-700 underline">
+            المتابعة بدون اختيار خطة الآن
+          </button>
+        </div>
+      </div>
+    </div>
 
     <!-- ===== قارئ QR ===== -->
     <section id="scan" class="py-16 border-t border-gray-200/60">
@@ -394,6 +454,63 @@
             mawthooqApplyLang(l);
             setActiveLangBtn();
           }
+        });
+      });
+
+      // خطط الاشتراك: عرض مرة واحدة فقط قبل أول مسح
+      var plansModal = document.getElementById('plans-modal');
+      var plansCloseBtn = document.getElementById('plans-close-btn');
+      var plansContinueBtn = document.getElementById('plans-continue-btn');
+
+      function openPlansModal() {
+        if (!plansModal) return;
+        plansModal.classList.remove('hidden');
+        plansModal.classList.add('flex');
+        document.body.classList.add('overflow-hidden');
+      }
+
+      function closePlansModalAndGoToScan() {
+        if (plansModal) {
+          plansModal.classList.add('hidden');
+          plansModal.classList.remove('flex');
+        }
+        document.body.classList.remove('overflow-hidden');
+        try {
+          localStorage.setItem('mawthooq_plans_shown', '1');
+        } catch (e) {}
+        var target = document.querySelector('#scan');
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+
+      document.querySelectorAll('.scan-trigger').forEach(function(el) {
+        el.addEventListener('click', function(e) {
+          var alreadyShown = false;
+          try { alreadyShown = !!localStorage.getItem('mawthooq_plans_shown'); } catch (err) { alreadyShown = false; }
+          if (!alreadyShown) {
+            e.preventDefault();
+            openPlansModal();
+          }
+        });
+      });
+
+      if (plansCloseBtn) {
+        plansCloseBtn.addEventListener('click', function() {
+          if (plansModal) {
+            plansModal.classList.add('hidden');
+            plansModal.classList.remove('flex');
+          }
+          document.body.classList.remove('overflow-hidden');
+        });
+      }
+      if (plansContinueBtn) {
+        plansContinueBtn.addEventListener('click', function() {
+          closePlansModalAndGoToScan();
+        });
+      }
+      document.querySelectorAll('.plan-select-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          // يمكن لاحقاً تخزين نوع الخطة المختارة إذا احتجنا
+          closePlansModalAndGoToScan();
         });
       });
     });
