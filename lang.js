@@ -116,6 +116,8 @@ window.MAWTHOOQ_T = {
     product_benefits: "الفوائد",
     product_warnings: "تحذيرات",
     product_alert: "تنبيه",
+    product_tips: "نصائح وإرشادات",
+    product_alternative: "منتج بديل أصلي مقترح",
     batch_label: "رقم الدفعة"
   },
   fr: {
@@ -231,6 +233,8 @@ window.MAWTHOOQ_T = {
     product_benefits: "Avantages",
     product_warnings: "Avertissements",
     product_alert: "Alerte",
+    product_tips: "Conseils et recommandations",
+    product_alternative: "Produit alternatif authentique recommandé",
     batch_label: "N° de lot"
   },
   en: {
@@ -346,6 +350,8 @@ window.MAWTHOOQ_T = {
     product_benefits: "Benefits",
     product_warnings: "Warnings",
     product_alert: "Notice",
+    product_tips: "Tips and guidance",
+    product_alternative: "Recommended authentic alternative",
     batch_label: "Batch number"
   }
 };

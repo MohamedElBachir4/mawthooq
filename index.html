@@ -525,7 +525,7 @@
     (function() {
       'use strict';
       if (typeof window.MAWTHOOQ_PRODUCTS === 'undefined') window.MAWTHOOQ_PRODUCTS = {};
-      var QRFY_TOUCHE = { id: 'ttyrz4Qa0Z', nameAr: 'كريم مرطّب للوجه', nameFr: 'Crème hydratante visage', brand: 'Touché Skincare Lab', category: 'تجميلي', status: 'original', image: 'https://placehold.co/400x300/f1f5f9/2563eb?text=Touch%C3%A9+Creme', description: 'كريم مرطّب يومي للوجه من Touché Skincare Lab. مناسب للبشرة الحساسة.', ingredients: 'ماء، غليسيرين، زيت اللوز، فيتامين E، خلاصة الصبار.', warnings: 'للاستخدام الخارجي فقط. تجنب منطقة العين.', instructions: 'ضع كمية صغيرة على الوجه والرقبة بعد التنظيف. دَلّك برفق حتى الامتصاص. يُنصح بالاستخدام صباحاً ومساءً.', productUrl: 'https://qrfy.io/ttyrz4Qa0Z', usageTimes: 'صباحاً ومساءً، مرة أو مرتين يومياً بعد التنظيف.', risks: 'نادراً قد يسبب تهيّجاً خفيفاً للبشرة الحساسة جداً. في حال استمرار الاحمرار أو الحكة أوقف الاستخدام واستشر الطبيب.', storage: 'يحفظ في مكان جاف ومعتدل الحرارة، بعيداً عن أشعة الشمس المباشرة.', expiryAfterOpen: 'يفضّل استخدامه خلال 6 أشهر من فتح العبوة (PAO).', skinTypes: 'جميع أنواع البشرة، خصوصاً الجافة والعادية والحساسة.', volume: '50 مل', contraindications: 'لا يُنصح به في حال التحسس من أي من المكونات. تجنب منطقة العين.', benefits: 'ترطيب عميق، حماية حاجز البشرة، ملمس غير لزج، خالٍ من العطور الصناعية.' };
+      var QRFY_TOUCHE = { id: 'ttyrz4Qa0Z', nameAr: 'كريم مرطّب للوجه', nameFr: 'Crème hydratante visage', brand: 'Touché Skincare Lab', category: 'تجميلي', status: 'original', image: 'https://placehold.co/400x300/f1f5f9/2563eb?text=Touch%C3%A9+Creme', description: 'كريم مرطّب يومي للوجه من Touché Skincare Lab. مناسب للبشرة الحساسة.', ingredients: 'ماء، غليسيرين، زيت اللوز، فيتامين E، خلاصة الصبار.', warnings: 'للاستخدام الخارجي فقط. تجنب منطقة العين.', instructions: 'ضع كمية صغيرة على الوجه والرقبة بعد التنظيف. دَلّك برفق حتى الامتصاص. يُنصح بالاستخدام صباحاً ومساءً.', productUrl: 'https://qrfy.io/ttyrz4Qa0Z', usageTimes: 'صباحاً ومساءً، مرة أو مرتين يومياً بعد التنظيف.', risks: 'نادراً قد يسبب تهيّجاً خفيفاً للبشرة الحساسة جداً. في حال استمرار الاحمرار أو الحكة أوقف الاستخدام واستشر الطبيب.', storage: 'يحفظ في مكان جاف ومعتدل الحرارة، بعيداً عن أشعة الشمس المباشرة.', expiryAfterOpen: 'يفضّل استخدامه خلال 6 أشهر من فتح العبوة (PAO).', skinTypes: 'جميع أنواع البشرة، خصوصاً الجافة والعادية والحساسة.', volume: '50 مل', contraindications: 'لا يُنصح به في حال التحسس من أي من المكونات. تجنب منطقة العين.', benefits: 'ترطيب عميق، حماية حاجز البشرة، ملمس غير لزج، خالٍ من العطور الصناعية.', guidance: 'رغم أن المنتج أصلي، يفضل دائماً دعم روتينك ببدائل طبيعية مثل جل الألوفيرا النقي أو الزيوت النباتية الخفيفة المناسبة لنوع بشرتك.', alternativeProduct: { name: 'بديل عشبي مقترح: جل ألوفيرا نقي + ماء ورد', image: 'https://placehold.co/200x200/e6fffa/0f766e?text=Herbal+Alternative', note: 'بديل طبيعي للترطيب اليومي: امزج جل الألوفيرا النقي مع قطرات من ماء الورد، وجرّب على جزء صغير من البشرة أولاً.' } };
 
       var lastDecodedAt = 0;
       var DECODE_COOLDOWN_MS = 2500;
@@ -597,6 +597,17 @@
         var contraindications = p.contraindications ? section(T.product_contraindications || 'موانع الاستخدام', '<i class="fas fa-ban text-red-600"></i>', p.contraindications, 'bg-red-50') : '';
         var benefits = p.benefits ? section(T.product_benefits || 'الفوائد', '<i class="fas fa-check-circle text-green-600"></i>', p.benefits, 'bg-green-50') : '';
         var benefitsNote = p.benefitsNote ? section(T.product_alert || 'تنبيه', '<i class="fas fa-info-circle text-amber-600"></i>', p.benefitsNote, 'bg-amber-50') : '';
+        var guidance = p.guidance ? section(T.product_tips || 'نصائح وإرشادات', '<i class="fas fa-lightbulb text-sky-600"></i>', p.guidance, 'bg-sky-50') : '';
+        var alternative = '';
+        if (p.alternativeProduct && (p.alternativeProduct.name || p.alternativeProduct.image || p.alternativeProduct.note)) {
+          var altName = p.alternativeProduct.name ? '<p class="font-bold text-gray-900">' + p.alternativeProduct.name + '</p>' : '';
+          var altNote = p.alternativeProduct.note ? '<p class="text-sm text-gray-600 mt-1">' + p.alternativeProduct.note + '</p>' : '';
+          var altImg = p.alternativeProduct.image ? '<img src="' + p.alternativeProduct.image + '" alt="" class="w-16 h-16 object-cover rounded-xl border border-gray-200">' : '';
+          alternative = '<div class="bg-emerald-50 rounded-xl p-4 mt-3 border border-emerald-100">' +
+            '<p class="text-sm font-semibold text-emerald-800 mb-2"><i class="fas fa-star text-emerald-600"></i> ' + (T.product_alternative || 'منتج بديل أصلي مقترح') + '</p>' +
+            '<div class="flex items-start gap-3">' + altImg + '<div>' + altName + altNote + '</div></div>' +
+            '</div>';
+        }
         var statusLabel = T.product_status || 'حالة المنتج';
         var descLabel = T.product_description || 'الوصف';
         return '<div class="product-detail-card rounded-2xl overflow-hidden border border-gray-100 shadow-lg">' + img +
@@ -608,7 +619,7 @@
           '<p class="text-xs font-medium text-gray-500 mt-1">' + statusLabel + '</p>' +
           brand + volume + batch +
           '<div class="mt-4"><p class="text-xs font-semibold text-gray-500 mb-1">' + descLabel + '</p>' + desc + '</div>' +
-          benefits + benefitsNote + usageTimes + instructions + ing + skinTypes + expiry + storage + contraindications + risks + warn +
+          benefits + benefitsNote + guidance + alternative + usageTimes + instructions + ing + skinTypes + expiry + storage + contraindications + risks + warn +
           '</div></div>';
       }
 
@@ -806,6 +817,7 @@
         resultEl.classList.add('hidden');
         startScanner();
       });
+
 
       var scanSection = document.getElementById('scan');
       var observer = new IntersectionObserver(function(entries) {
