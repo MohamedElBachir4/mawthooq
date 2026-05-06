@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VURA — تسجيل الدخول</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>* { font-family: 'Cairo', sans-serif; } body { background: linear-gradient(155deg, #ecfffc 0%, #40E0D0 18%, #c5f5ef 42%, #ffffff 100%); min-height: 100vh; }</style>
+</head>
+<body class="text-slate-900 antialiased flex flex-col min-h-screen" data-vura-meta="meta_title_login">
+
+  <nav class="border-b-2 border-[#40E0D0] bg-white/92 backdrop-blur-sm shadow-[0_10px_36px_-14px_rgba(64,224,208,0.4)]">
+    <div class="container mx-auto px-4 md:px-8 py-3.5 flex items-center justify-between">
+      <a href="index.html" class="flex items-center shrink-0" data-i18n-aria="aria_home">
+        <img src="logo.jpeg" alt="VURA" width="150" height="45" class="h-10 md:h-11 w-auto max-w-[min(190px,48vw)] object-contain object-right" />
+      </a>
+      <div class="flex flex-wrap items-center justify-end gap-2 sm:gap-3">
+        <div class="flex items-center rounded-full border border-teal-200 bg-white p-0.5 gap-0.5 shadow-sm me-1" role="group" data-i18n-aria="lang_group_aria">
+          <button type="button" class="vura-lang-btn px-2 py-1 rounded-full text-xs font-bold text-slate-600 hover:bg-teal-50" data-vura-lang="ar">AR</button>
+          <button type="button" class="vura-lang-btn px-2 py-1 rounded-full text-xs font-bold text-slate-600 hover:bg-teal-50" data-vura-lang="fr">FR</button>
+          <button type="button" class="vura-lang-btn px-2 py-1 rounded-full text-xs font-bold text-slate-600 hover:bg-teal-50" data-vura-lang="en">EN</button>
+        </div>
+        <a href="index.html" class="text-sm font-bold text-teal-800 px-1"><span data-i18n="nav_home">الرئيسية</span></a>
+        <a href="products.html" class="text-sm font-bold text-slate-800 hover:text-teal-700 px-1"><span data-i18n="nav_products">المنتجات</span></a>
+        <a href="verify.html" class="inline-flex items-center gap-2 rounded-full border-2 border-[#0c2748] bg-teal-50/90 px-3 py-2 text-xs sm:text-sm font-bold text-[#0c2748] shadow-sm hover:bg-teal-100 transition">
+          <i class="fas fa-qrcode"></i>
+          <span class="hidden sm:inline" data-i18n="nav_verify_long">التحقق من المنتجات الأصلية</span>
+          <span class="sm:hidden" data-i18n="nav_verify_short">تحقق الأصالة</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="flex-1 flex items-center justify-center px-4 py-12">
+    <div class="w-full max-w-md rounded-[2rem] border-2 border-[#40E0D0]/40 bg-white p-8 md:p-10 shadow-[0_28px_70px_-24px_rgba(64,224,208,0.45)] ring-2 ring-[#40E0D0]/20">
+      <div class="text-center mb-8">
+        <div class="mx-auto h-14 w-14 rounded-2xl bg-gradient-to-br from-[#40E0D0] to-emerald-800 flex items-center justify-center text-[#082032] text-2xl mb-4 shadow-[0_12px_36px_-8px_rgba(64,224,208,0.55)] ring-2 ring-[#40E0D0]/40">
+          <i class="fas fa-user-tie"></i>
+        </div>
+        <h1 class="text-2xl font-black text-[#0c2748]" data-i18n="login_title">تسجيل دخول الموزع</h1>
+        <p class="mt-2 text-sm text-slate-600" data-i18n="login_sub">أدخل أي قيمة للمتابعة — لا يوجد تحقق حقيقي.</p>
+      </div>
+      <form id="login-form" class="space-y-6">
+        <div>
+          <label for="dist-id" class="block text-sm font-bold text-slate-800 mb-2" data-i18n="login_label">معرف الموزع أو البريد</label>
+          <input type="text" id="dist-id" name="dist-id" autocomplete="username" class="w-full rounded-2xl border-2 border-teal-100 px-4 py-3.5 font-medium text-slate-900 placeholder:text-teal-300/80 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition" data-i18n-placeholder="login_placeholder">
+        </div>
+        <button type="submit" class="w-full rounded-full bg-gradient-to-l from-[#40E0D0] via-teal-600 to-emerald-800 text-[#082032] font-black py-4 text-lg shadow-[0_14px_40px_-10px_rgba(64,224,208,0.5)] hover:brightness-[1.05] transition flex items-center justify-center gap-2">
+          <span data-i18n="login_submit">دخول لوحة التحكم</span>
+          <i class="fas fa-arrow-left"></i>
+        </button>
+      </form>
+      <p class="mt-6 text-center text-xs text-teal-800/70" data-i18n="login_footer">واجهة تجريبية — التوجيه مباشر إلى لوحة التحكم.</p>
+    </div>
+  </main>
+
+  <script src="vura-i18n.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      window.vuraInitI18n();
+      document.getElementById('login-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        window.location.href = 'dashboard.html';
+      });
+    });
+  </script>
+</body>
+</html>

@@ -3,867 +3,215 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>موثوق – تحقق من منتجاتك فوراً</title>
-  <script src="lang.js"></script>
-  <!-- Tailwind via CDN + modern font (Cairo) -->
+  <title>VURA</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <!-- Heroicons (outline) for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     * { font-family: 'Cairo', sans-serif; }
-    body { background-color: #fafbfc; }
-    /* subtle animations */
-    .hover-lift { transition: transform 0.2s ease, box-shadow 0.2s ease; }
-    .hover-lift:hover { transform: translateY(-4px); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.05), 0 10px 10px -5px rgba(0,0,0,0.01); }
-    .fade-in { animation: fadeIn 0.5s ease-in; }
-    @keyframes fadeIn { 0% { opacity: 0; transform: translateY(10px); } 100% { opacity: 1; transform: translateY(0); } }
-    .nav-link { position: relative; }
-    .nav-link:after { content: ''; position: absolute; width: 0; height: 2px; bottom: -2px; right: 0; background-color: #2563eb; transition: width 0.2s; }
-    .nav-link:hover:after { width: 100%; }
-    .mobile-menu { transition: all 0.2s ease; }
-    /* Scanner: فيديو + jsQR (متوافق مع iPhone و Safari) */
-    #qr-reader { min-height: 320px !important; width: 100% !important; position: relative; background: #000; }
-    #qr-video { width: 100% !important; height: auto !important; max-height: 70vh; object-fit: cover; display: block; }
-    #qr-canvas { display: none; }
-    .scan-status { transition: opacity 0.2s; }
-    .scanner-guide { position: absolute; inset: 50%; transform: translate(-50%, -50%); width: 260px; height: 260px; border: 3px solid rgba(255,255,255,0.7); border-radius: 16px; pointer-events: none; box-shadow: 0 0 0 9999px rgba(0,0,0,0.35); }
-    .lang-btn.active { background: #2563eb; color: white; border-color: #2563eb; }
+    body { background: linear-gradient(180deg, #ecfffc 0%, #ffffff 38%, #f0fffd 55%, #e6faf8 100%); }
+    .hover-lift { transition: transform 0.25s ease, box-shadow 0.25s ease; }
+    .hover-lift:hover { transform: translateY(-6px); box-shadow: 0 28px 48px -14px rgba(64, 224, 208, 0.42); }
+    .nav-link { position: relative; color: #134e4a; }
+    .nav-link::after { content: ''; position: absolute; width: 0; height: 3px; bottom: -4px; right: 0; background: linear-gradient(90deg, #40E0D0, #0d9488); transition: width 0.25s ease; border-radius: 2px; box-shadow: 0 0 12px rgba(64,224,208,.65); }
+    .nav-link:hover::after { width: 100%; }
+    .hero-glow { filter: blur(88px); opacity: 0.5; }
+    .turquoise-pulse { animation: tqPulse 4s ease-in-out infinite; }
+    @keyframes tqPulse { 0%, 100% { opacity: 0.42; transform: scale(1); } 50% { opacity: 0.62; transform: scale(1.05); } }
+    .fade-up { animation: fadeUp 0.7s ease-out both; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
   </style>
 </head>
-<body class="text-gray-800 antialiased" dir="rtl">
+<body class="text-slate-900 antialiased min-h-screen" data-vura-meta="meta_title_index">
 
-  <!-- =====  NAVBAR (modern, with mobile menu) ===== -->
-  <nav class="bg-white/80 backdrop-blur-sm sticky top-0 z-30 border-b border-gray-100">
-    <div class="container mx-auto px-5 md:px-8 py-4 flex items-center justify-between">
-      <!-- logo -->
-      <a href="#" class="flex items-center gap-2 shrink-0">
-        <img src="logo.jpg" alt="Mawthooq" class="h-10 md:h-12 w-auto object-contain" />
-        <span class="text-2xl font-extrabold text-blue-600 tracking-tight" data-i18n="brand_name">موثوق</span>
+  <nav class="sticky top-0 z-40 border-b-2 border-[#40E0D0] bg-white/92 backdrop-blur-md shadow-[0_10px_40px_-16px_rgba(64,224,208,0.45)]">
+    <div class="container mx-auto px-4 md:px-8 py-3.5 flex items-center justify-between gap-4">
+      <a href="index.html" class="flex items-center shrink-0 group" data-i18n-aria="aria_home">
+        <img src="logo.jpeg" alt="VURA" width="160" height="48" class="h-11 md:h-[52px] w-auto max-w-[min(200px,42vw)] object-contain object-right transition-opacity group-hover:opacity-90" />
       </a>
-      
-      <!-- desktop links -->
-      <div class="hidden md:flex space-x-2 space-x-reverse gap-8 font-medium text-gray-600 items-center">
-        <a href="#home" class="nav-link text-blue-600" data-i18n="nav_home">الرئيسية</a>
-        <a href="#about" class="nav-link" data-i18n="nav_about">من نحن</a>
-        <a href="#services" class="nav-link" data-i18n="nav_services">خدماتنا</a>
-        <a href="#how" class="nav-link" data-i18n="nav_how">آلية العمل</a>
-        <a href="#contact" class="nav-link" data-i18n="nav_contact">اتصل بنا</a>
-        <div class="flex gap-1 border border-gray-200 rounded-full p-0.5 bg-gray-50">
-          <button type="button" class="lang-btn px-2.5 py-1 rounded-full text-xs font-medium" data-lang="ar" title="العربية">AR</button>
-          <button type="button" class="lang-btn px-2.5 py-1 rounded-full text-xs font-medium" data-lang="fr" title="Français">FR</button>
-          <button type="button" class="lang-btn px-2.5 py-1 rounded-full text-xs font-medium" data-lang="en" title="English">EN</button>
-        </div>
+      <div class="hidden md:flex items-center gap-6 lg:gap-8 font-semibold text-slate-800">
+        <a href="index.html#home" class="nav-link text-teal-800"><span data-i18n="nav_home">الرئيسية</span></a>
+        <a href="products.html" class="nav-link"><span data-i18n="nav_products">المنتجات</span></a>
+        <a href="login.html" class="nav-link"><span data-i18n="nav_distributor">تسجيل دخول الموزع</span></a>
       </div>
-
-      <!-- CTA & mobile button -->
-      <div class="flex items-center gap-3">
-        <a href="#scan" class="scan-trigger hidden md:inline-block bg-blue-600 text-white px-5 py-2 rounded-full text-sm font-semibold shadow-md hover:bg-blue-700 transition shadow-lg hover:shadow-xl" data-i18n="nav_scan_btn">امسح منتجك</a>
-        <!-- mobile menu button -->
-        <button id="menuBtn" class="block md:hidden text-gray-600 text-2xl focus:outline-none">
+      <div class="flex items-center gap-2 shrink-0">
+        <div class="hidden sm:flex items-center rounded-full border border-teal-200 bg-white p-0.5 gap-0.5 shadow-sm" role="group" data-i18n-aria="lang_group_aria">
+          <button type="button" class="vura-lang-btn px-2 py-1 rounded-full text-xs font-bold transition text-slate-600 hover:bg-teal-50" data-vura-lang="ar">AR</button>
+          <button type="button" class="vura-lang-btn px-2 py-1 rounded-full text-xs font-bold transition text-slate-600 hover:bg-teal-50" data-vura-lang="fr">FR</button>
+          <button type="button" class="vura-lang-btn px-2 py-1 rounded-full text-xs font-bold transition text-slate-600 hover:bg-teal-50" data-vura-lang="en">EN</button>
+        </div>
+        <a href="verify.html" class="hidden sm:inline-flex items-center gap-2 rounded-full border-2 border-[#0c2748] bg-teal-50/90 px-3 py-2 lg:px-4 text-xs lg:text-sm font-bold text-[#0c2748] shadow-sm hover:bg-teal-100 transition" data-i18n-title="title_scan_qr">
+          <i class="fas fa-qrcode"></i>
+          <span class="hidden lg:inline" data-i18n="nav_verify_long">التحقق من المنتجات الأصلية</span>
+          <span class="lg:hidden" data-i18n="nav_verify_short">تحقق الأصالة</span>
+        </a>
+        <a href="products.html" class="hidden sm:inline-flex items-center gap-2 rounded-full bg-gradient-to-l from-[#40E0D0] to-emerald-700 px-4 py-2 text-sm font-bold text-[#082032] shadow-[0_8px_28px_-8px_rgba(64,224,208,0.55)] hover:brightness-105 transition">
+          <i class="fas fa-store"></i> <span data-i18n="nav_store">المتجر</span>
+        </a>
+        <button type="button" id="menuBtn" class="md:hidden text-slate-800 text-2xl p-2 rounded-xl hover:bg-teal-50" data-i18n-aria="aria_menu">
           <i class="fas fa-bars"></i>
         </button>
       </div>
     </div>
-    <!-- mobile menu dropdown (hidden by default) -->
-    <div id="mobileMenu" class="hidden md:hidden bg-white border-t border-gray-100 py-4 px-6 flex flex-col gap-3 text-base font-medium">
-      <a href="#home" class="hover:text-blue-600 transition" data-i18n="nav_home">الرئيسية</a>
-      <a href="#about" class="hover:text-blue-600 transition" data-i18n="nav_about">من نحن</a>
-      <a href="#services" class="hover:text-blue-600 transition" data-i18n="nav_services">خدماتنا</a>
-      <a href="#how" class="hover:text-blue-600 transition" data-i18n="nav_how">آلية العمل</a>
-      <a href="#contact" class="hover:text-blue-600 transition" data-i18n="nav_contact">اتصل بنا</a>
-      <div class="flex gap-2 mt-2">
-        <button type="button" class="lang-btn flex-1 py-2 rounded-full border text-sm" data-lang="ar">AR</button>
-        <button type="button" class="lang-btn flex-1 py-2 rounded-full border text-sm" data-lang="fr">FR</button>
-        <button type="button" class="lang-btn flex-1 py-2 rounded-full border text-sm" data-lang="en">EN</button>
+    <div id="mobileMenu" class="hidden md:hidden border-t-2 border-[#40E0D0]/70 bg-white/98 px-6 py-4 flex flex-col gap-3 font-semibold shadow-[0_12px_40px_-20px_rgba(64,224,208,0.35)]">
+      <div class="flex justify-center rounded-full border border-teal-200 bg-teal-50/50 p-0.5 gap-1 mb-1" role="group" data-i18n-aria="lang_group_aria">
+        <button type="button" class="vura-lang-btn flex-1 py-2 rounded-full text-sm font-bold text-slate-600" data-vura-lang="ar">AR</button>
+        <button type="button" class="vura-lang-btn flex-1 py-2 rounded-full text-sm font-bold text-slate-600" data-vura-lang="fr">FR</button>
+        <button type="button" class="vura-lang-btn flex-1 py-2 rounded-full text-sm font-bold text-slate-600" data-vura-lang="en">EN</button>
       </div>
-      <a href="#scan" class="scan-trigger bg-blue-50 text-blue-700 px-4 py-2 rounded-full text-center mt-2" data-i18n="nav_scan_btn">امسح منتجك</a>
+      <a href="index.html#home" class="py-2 text-teal-800"><span data-i18n="nav_home">الرئيسية</span></a>
+      <a href="products.html" class="py-2 text-slate-800"><span data-i18n="nav_products">المنتجات</span></a>
+      <a href="login.html" class="py-2 text-slate-800"><span data-i18n="nav_distributor">تسجيل دخول الموزع</span></a>
+      <a href="verify.html" class="flex items-center justify-center gap-2 rounded-full border-2 border-[#0c2748] bg-teal-50 text-[#0c2748] text-center py-3 font-bold shadow-sm">
+        <i class="fas fa-qrcode"></i>
+        <span data-i18n="nav_verify_long">التحقق من المنتجات الأصلية</span>
+      </a>
+      <a href="products.html" class="mt-1 rounded-full bg-gradient-to-l from-[#40E0D0] to-emerald-700 text-[#082032] text-center py-3 font-bold shadow-[0_10px_28px_-8px_rgba(64,224,208,0.5)]"><span data-i18n="browse_products">تصفح المنتجات</span></a>
     </div>
   </nav>
 
-  <main class="container mx-auto px-5 md:px-8">
-
-    <!-- ===== 1. HOME / LANDING ===== -->
-    <section id="home" class="py-10 md:py-16 fade-in">
-      <div class="grid md:grid-cols-2 gap-12 items-center">
-        <div>
-          <h1 class="text-4xl md:text-5xl lg:text-6xl font-black leading-tight text-gray-900"><span data-i18n="hero_title">تحقق من منتجاتك</span> <br> <span class="text-blue-600" data-i18n="hero_title_highlight">في لحظات</span></h1>
-          <p class="text-lg text-gray-600 mt-6 leading-relaxed" data-i18n="hero_sub">باستخدام منصة موثوق، امسح رمز QR على أي منتج غذائي أو تجميلي لتعرف مدى أصالته وسلامته. نحن نحميك من المنتجات المغشوشة والخطرة.</p>
-          <div class="flex flex-wrap gap-4 mt-8">
-            <a href="#scan" class="scan-trigger bg-blue-600 text-white px-8 py-4 rounded-full text-lg font-semibold shadow-xl hover:bg-blue-700 transition inline-flex items-center gap-2"><i class="fas fa-qrcode"></i> <span data-i18n="hero_scan_btn">امسح المنتج الآن</span></a>
-            <a href="#how" class="border border-gray-300 bg-white px-8 py-4 rounded-full text-lg font-semibold text-gray-700 hover:border-blue-300 hover:text-blue-600 transition shadow-sm"><span data-i18n="hero_how_btn">كيف تعمل</span></a>
-          </div>
-          <div class="flex items-center gap-6 mt-8 text-sm text-gray-500">
-            <span><i class="fas fa-check-circle text-green-500 ml-1"></i> <span data-i18n="hero_stat1">أكثر من 10 آلاف منتج موثّق</span></span>
-            <span><i class="fas fa-shield-alt text-blue-500 ml-1"></i> <span data-i18n="hero_stat2">دقة عالية</span></span>
-          </div>
-        </div>
-        <!-- illustration: verification concept (card with QR) -->
-        <div class="relative flex justify-center">
-          <div class="bg-white rounded-3xl shadow-2xl p-8 w-full max-w-md border border-gray-100 hover-lift">
-            <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 flex flex-col items-center">
-              <div class="bg-white p-3 rounded-xl shadow-sm border border-gray-200 w-fit">
-                <i class="fas fa-qrcode text-5xl text-blue-700"></i>
-              </div>
-              <p class="mt-4 font-semibold text-gray-700" data-i18n="hero_card_tagline">منتج غذائي · شوكولاته</p>
-              <div class="bg-white w-full rounded-xl p-4 mt-4 text-right border">
-                <div class="flex justify-between items-center border-b pb-2">
-                  <span class="text-green-600 bg-green-50 px-2 py-1 rounded-full text-xs" data-i18n="hero_card_status">✔ أصلي</span>
-                  <span class="font-bold" data-i18n="hero_card_title">شوكولاته داكنة</span>
-                </div>
-                <p class="text-xs text-gray-500 mt-2"><i class="fas fa-leaf ml-1 text-green-600"></i> <span data-i18n="hero_card_bullet1">خالٍ من الدهون المهدرجة</span></p>
-                <p class="text-xs text-gray-500"><i class="fas fa-exclamation-triangle ml-1 text-amber-500"></i> <span data-i18n="hero_card_bullet2">قد يحتوي على مكسرات</span></p>
-              </div>
-              <p class="text-xs text-gray-400 mt-3 flex items-center gap-1"><i class="fas fa-check-circle text-blue-500"></i> <span data-i18n="hero_card_verified">تم التحقق عبر موثوق</span></p>
-            </div>
-          </div>
-          <!-- floating element -->
-          <div class="absolute -bottom-3 -left-3 bg-white p-3 rounded-full shadow-lg border border-gray-200 hidden md:block">
-            <i class="fas fa-camera text-blue-500 text-xl"></i>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===== PLANS MODAL (first-time before scanning) ===== -->
-    <div id="plans-modal" class="fixed inset-0 bg-black/50 z-40 hidden items-end md:items-center justify-center px-3 pb-4 md:px-4 md:pb-0">
-      <div class="bg-white rounded-3xl max-w-xl w-full shadow-2xl p-5 md:p-8 relative max-h-[90vh] overflow-y-auto">
-        <button type="button" id="plans-close-btn" class="absolute top-3 left-3 text-gray-400 hover:text-gray-600">
-          <i class="fas fa-times text-lg"></i>
-        </button>
-        <div class="text-center mb-6">
-          <h2 class="text-2xl md:text-3xl font-bold mb-2">اختر خطة الاستخدام</h2>
-          <p class="text-gray-500 text-sm md:text-base">قبل بدء المسح لأول مرة، اختر الخطة المناسبة لك. يمكنك تغييرها لاحقاً.</p>
-        </div>
-        <div class="grid md:grid-cols-3 gap-4 md:gap-6">
-          <!-- Plan 1 -->
-          <div class="border border-gray-200 rounded-2xl p-4 flex flex-col">
-            <h3 class="font-bold text-lg mb-1">الخطة المجانية</h3>
-            <p class="text-sm text-gray-500 mb-3">استخدم التطبيق مجاناً لمدة 7 أيام.</p>
-            <p class="text-2xl font-extrabold text-blue-600 mb-4">0 دج</p>
-            <ul class="text-xs text-gray-500 space-y-1 mb-4">
-              <li>مسح عدد محدود من المنتجات</li>
-              <li>عرض تفاصيل سلامة المنتج</li>
-            </ul>
-            <button type="button" class="plan-select-btn mt-auto bg-blue-50 text-blue-700 rounded-full py-2 text-sm font-semibold hover:bg-blue-100" data-plan="free">ابدأ بالخطة المجانية</button>
-          </div>
-          <!-- Plan 2 -->
-          <div class="border border-blue-300 rounded-2xl p-4 flex flex-col bg-blue-50/40">
-            <div class="flex items-center justify-between mb-1">
-              <h3 class="font-bold text-lg">الخطة الشهرية</h3>
-              <span class="text-xs bg-blue-600 text-white px-2 py-0.5 rounded-full">الأكثر شيوعاً</span>
-            </div>
-            <p class="text-sm text-gray-600 mb-3">اشتراك بـ 2000 دج شهرياً.</p>
-            <p class="text-2xl font-extrabold text-blue-700 mb-1">2000 دج</p>
-            <p class="text-xs text-gray-500 mb-4">يتم التجديد شهرياً.</p>
-            <ul class="text-xs text-gray-600 space-y-1 mb-4">
-              <li>مسح غير محدود للمنتجات</li>
-              <li>تنبيهات فورية حول المخاطر</li>
-              <li>دعم فني أساسي</li>
-            </ul>
-            <button type="button" class="plan-select-btn mt-auto bg-blue-600 text-white rounded-full py-2 text-sm font-semibold hover:bg-blue-700" data-plan="monthly">اختر الخطة الشهرية</button>
-          </div>
-          <!-- Plan 3 -->
-          <div class="border border-gray-200 rounded-2xl p-4 flex flex-col">
-            <h3 class="font-bold text-lg mb-1">الخطة السنوية</h3>
-            <p class="text-sm text-gray-500 mb-3">اشتراك سنوي بـ 18000 دج.</p>
-            <p class="text-2xl font-extrabold text-emerald-600 mb-1">18000 دج</p>
-            <p class="text-xs text-gray-500 mb-4">توفير مقارنة مع الدفع الشهري.</p>
-            <ul class="text-xs text-gray-500 space-y-1 mb-4">
-              <li>مسح غير محدود للمنتجات طوال السنة</li>
-              <li>أولوية في الدعم الفني</li>
-              <li>مزايا وتقارير إضافية مستقبلاً</li>
-            </ul>
-            <button type="button" class="plan-select-btn mt-auto bg-emerald-50 text-emerald-700 rounded-full py-2 text-sm font-semibold hover:bg-emerald-100" data-plan="yearly">اختر الخطة السنوية</button>
-          </div>
-        </div>
-        <div class="mt-5 text-center">
-          <button type="button" id="plans-continue-btn" class="text-sm text-gray-500 hover:text-gray-700 underline">
-            المتابعة بدون اختيار خطة الآن
-          </button>
-        </div>
-      </div>
+  <main id="home" class="relative overflow-hidden">
+    <div class="pointer-events-none absolute inset-0 -z-10">
+      <div class="hero-glow turquoise-pulse absolute -top-28 right-[18%] h-80 w-80 rounded-full bg-[#40E0D0]"></div>
+      <div class="hero-glow absolute top-36 left-[-5%] h-[26rem] w-[26rem] rounded-full bg-teal-300/90 mix-blend-multiply"></div>
     </div>
 
-    <!-- ===== قارئ QR ===== -->
-    <section id="scan" class="py-16 border-t border-gray-200/60">
-      <div class="text-center max-w-2xl mx-auto mb-10">
-        <span class="text-blue-600 font-semibold tracking-wider" data-i18n="scan_badge">الماسح الضوئي</span>
-        <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-4" data-i18n="scan_title">امسح رمز QR للمنتج</h2>
-        <p class="text-gray-500" data-i18n="scan_sub">وجّه الكاميرا نحو رمز QR على العبوة للتحقق من المنتج</p>
-      </div>
-      <div class="max-w-md mx-auto">
-        <div class="relative rounded-2xl overflow-hidden border-2 border-gray-200 bg-gray-900 shadow-xl" dir="ltr">
-          <div class="relative w-full min-h-[280px]">
-            <div id="qr-reader" class="w-full min-h-[280px]">
-              <video id="qr-video" playsinline muted></video>
-              <canvas id="qr-canvas"></canvas>
-            </div>
-            <div class="scanner-guide" aria-hidden="true"></div>
+    <section class="container mx-auto px-4 md:px-8 pt-12 pb-16 md:pt-20 md:pb-24">
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        <div class="fade-up">
+          <p class="inline-flex items-center gap-2 rounded-full border border-teal-200/80 bg-white/90 px-4 py-1.5 text-sm font-semibold text-teal-800 shadow-sm">
+            <i class="fas fa-leaf text-emerald-600"></i>
+            <span data-i18n="hero_badge">عناية بالبشرة · جمال أصلي · منتجات صحية</span>
+          </p>
+          <h1 class="mt-6 text-4xl md:text-5xl lg:text-6xl font-black leading-[1.15] text-[#0c2748]">
+            <span data-i18n="hero_welcome">مرحباً بك في</span> <span class="bg-gradient-to-l from-[#40E0D0] via-teal-600 to-emerald-700 bg-clip-text text-transparent drop-shadow-[0_0_28px_rgba(64,224,208,0.35)]">VURA</span>
+          </h1>
+          <p class="mt-4 text-xl md:text-2xl font-semibold text-slate-800 leading-relaxed" data-i18n="hero_tagline">VURA منصة متخصصة في بيع منتجات التجميل الأصلية والمنتجات الصحية</p>
+          <p class="mt-4 text-lg text-slate-600 leading-relaxed max-w-xl" data-i18n="hero_body">نختار لك مستحضرات التجميل وعناية بالبشرة ومنتجات صحية أصلية بعناية، مع تجربة تسوق هادئة وتأكيد أصالة عبر مسح رمز QR على العبوة — كل ذلك بواجهة بسيطة تركز على راحتك.</p>
+          <div class="mt-10 flex flex-wrap gap-4">
+            <a href="products.html" class="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-l from-[#40E0D0] via-teal-600 to-emerald-800 px-8 py-4 text-lg font-bold text-[#082032] shadow-[0_16px_44px_-12px_rgba(64,224,208,0.55)] hover:brightness-[1.06] hover:shadow-[0_22px_50px_-10px_rgba(64,224,208,0.6)] transition">
+              <i class="fas fa-shopping-bag"></i>
+              <span data-i18n="btn_browse_products">تصفح المنتجات</span>
+            </a>
+            <a href="verify.html" class="inline-flex items-center justify-center gap-2 rounded-full border-2 border-[#40E0D0] bg-white px-8 py-4 text-lg font-bold text-[#0c2748] hover:bg-[#40E0D0]/15 hover:shadow-[0_0_28px_rgba(64,224,208,0.35)] transition shadow-md">
+              <i class="fas fa-qrcode"></i>
+              <span data-i18n="btn_verify_authenticity">التحقق من أصالة المنتج</span>
+            </a>
           </div>
-          <div id="scan-status" class="scan-status absolute bottom-0 left-0 right-0 py-2 px-3 bg-black/60 text-white text-center text-sm"><span data-i18n="scan_status">جاري المسح... ضع رمز QR داخل الإطار</span></div>
-        </div>
-        <div id="scan-result" class="hidden mt-6">
-          <div id="scan-result-product" class="hidden p-6 bg-white rounded-2xl shadow-lg border border-gray-100 text-right"></div>
-          <div id="scan-result-raw" class="hidden p-6 bg-white rounded-2xl shadow-lg border border-gray-100">
-            <p class="text-sm font-medium text-gray-500 mb-1" data-i18n="scan_result_label">نتيجة المسح:</p>
-            <p id="scan-result-text" class="text-lg font-bold text-blue-600 break-all" dir="ltr"></p>
-            <p class="text-amber-600 text-sm mt-2 scan-not-found-msg"><i class="fas fa-info-circle ml-1"></i> <span data-i18n="scan_not_found">المنتج غير مسجّل في قاعدة بيانات موثوق.</span></p>
+          <div class="mt-10 flex flex-wrap gap-8 text-sm text-slate-600">
+            <span class="flex items-center gap-2"><i class="fas fa-check-circle text-emerald-600"></i> <span data-i18n="hero_stat1">منتجات مختارة بعناية</span></span>
+            <span class="flex items-center gap-2"><i class="fas fa-shield-heart text-teal-600"></i> <span data-i18n="hero_stat2">التحقق من الأصالة عبر QR</span></span>
           </div>
-          <button type="button" id="scan-again-btn" class="mt-4 w-full md:w-auto bg-blue-600 text-white px-6 py-3 rounded-full text-sm font-semibold hover:bg-blue-700 transition shadow-md" data-i18n="scan_again_btn">مسح رمز آخر</button>
         </div>
-        <div id="scan-error" class="hidden mt-4 p-4 bg-amber-50 border border-amber-200 rounded-2xl text-amber-800 text-sm">
-          <p id="scan-error-msg" class="font-medium"></p>
-          <p class="text-amber-700/80 mt-1 text-xs"><span data-i18n="scan_error_hint">تأكد من منح الموقع صلاحية الكاميرا أو جرّب متصفحاً آخر (Chrome / Edge).</span></p>
-        </div>
-        <p class="text-center text-gray-400 text-sm mt-4"><i class="fas fa-camera ml-1"></i> <span data-i18n="scan_camera_hint">يعمل أفضل على HTTPS أو localhost</span></p>
-      </div>
-    </section>
 
-    <!-- How it works (summary) + Features combined -->
-    <section class="py-16">
-      <div class="text-center max-w-2xl mx-auto">
-        <span class="text-blue-600 font-semibold tracking-wider" data-i18n="how_badge">منظومة متكاملة</span>
-        <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-4" data-i18n="how_title">كيف يعمل موثوق؟</h2>
-        <p class="text-gray-500" data-i18n="how_sub">ثلاث خطوات بسيطة للحصول على معلومات دقيقة عن أي منتج</p>
-      </div>
-      <div class="grid md:grid-cols-3 gap-8 mt-12">
-        <div class="bg-white p-8 rounded-3xl shadow-md border border-gray-50 hover-lift text-center">
-          <div class="bg-blue-100 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto text-blue-700 text-2xl">1</div>
-          <h3 class="text-xl font-bold mt-5" data-i18n="how_step1_title">افتح الماسح</h3>
-          <p class="text-gray-500 mt-2" data-i18n="how_step1">اضغط على زر المسح الضوئي داخل التطبيق أو الموقع.</p>
-        </div>
-        <div class="bg-white p-8 rounded-3xl shadow-md border border-gray-50 hover-lift text-center">
-          <div class="bg-blue-100 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto text-blue-700 text-2xl">2</div>
-          <h3 class="text-xl font-bold mt-5" data-i18n="how_step2_title">امسح رمز QR</h3>
-          <p class="text-gray-500 mt-2" data-i18n="how_step2">وجّه الكاميرا نحو الملصق الموجود على العبوة.</p>
-        </div>
-        <div class="bg-white p-8 rounded-3xl shadow-md border border-gray-50 hover-lift text-center">
-          <div class="bg-blue-100 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto text-blue-700 text-2xl">3</div>
-          <h3 class="text-xl font-bold mt-5" data-i18n="how_step3_title">تحقق واطلع</h3>
-          <p class="text-gray-500 mt-2" data-i18n="how_step3">تظهر لك معلومات شاملة: المكونات، المخاطر، وتعليمات الاستخدام.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Features section (cards with icons) -->
-    <section class="py-10">
-      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex gap-4 items-start hover-lift">
-          <i class="fas fa-check-circle text-3xl text-blue-500"></i>
-          <div><h4 class="font-bold" data-i18n="feat1_title">توثيق فوري</h4><p class="text-sm text-gray-500" data-i18n="feat1">نتائج خلال ثوانٍ</p></div>
-        </div>
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex gap-4 items-start hover-lift">
-          <i class="fas fa-clipboard-list text-3xl text-emerald-500"></i>
-          <div><h4 class="font-bold" data-i18n="feat2_title">تحليل المكونات</h4><p class="text-sm text-gray-500" data-i18n="feat2">تقرير شامل عن المواد</p></div>
-        </div>
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex gap-4 items-start hover-lift">
-          <i class="fas fa-bell text-3xl text-amber-500"></i>
-          <div><h4 class="font-bold" data-i18n="feat3_title">تنبيهات السلامة</h4><p class="text-sm text-gray-500" data-i18n="feat3">حساسية، مواد ضارة</p></div>
-        </div>
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex gap-4 items-start hover-lift">
-          <i class="fas fa-database text-3xl text-indigo-500"></i>
-          <div><h4 class="font-bold" data-i18n="feat4_title">معلومات موثقة</h4><p class="text-sm text-gray-500" data-i18n="feat4">قاعدة بيانات محدثة</p></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===== 2. ABOUT US ===== -->
-    <section id="about" class="py-20 border-t border-gray-200/60">
-      <div class="grid md:grid-cols-2 gap-16 items-center">
-        <div>
-          <span class="text-blue-600 font-semibold" data-i18n="about_badge">من نحن</span>
-          <h2 class="text-3xl md:text-4xl font-bold mt-2" data-i18n="about_title">نحو عالم بلا منتجات مغشوشة</h2>
-          <p class="text-gray-600 mt-6 leading-relaxed" data-i18n="about_p1">موثوق منصة رقمية تهدف إلى حماية المستهلك العربي من مخاطر المنتجات غير الأصلية أو الضارة. نؤمن بأن لكل شخص الحق في معرفة ما يضعها على بشرته أو داخل جسده. انطلقنا من رؤية واضحة: الشفافية الكاملة عبر تقنية المسح الضوئي.</p>
-          <p class="text-gray-600 mt-4 leading-relaxed" data-i18n="about_p2">نعمل مع مختبرات وهيئات رقابية لنضمن لك معلومات دقيقة عن الآلاف من المنتجات الغذائية ومستحضرات التجميل. مهمتنا: ثقة المستهلك أولاً.</p>
-        </div>
-        <div class="bg-blue-50 p-10 rounded-3xl relative">
-          <i class="fas fa-quote-right text-6xl text-blue-200 absolute top-4 left-4"></i>
-          <div class="relative z-10">
-            <p class="text-xl font-medium" data-i18n="about_quote">"نحن لا نكتفي بالكشف عن الغش، بل نُعلم المستهلك كيف يقرأ الملصقات ويحمي نفسه."</p>
-            <div class="flex items-center gap-3 mt-6">
-              <div class="w-12 h-12 bg-blue-200 rounded-full flex items-center justify-center text-blue-800 font-bold text-xl">ر</div>
-              <div><p class="font-bold" data-i18n="about_ceo">نورة السعد</p><p class="text-sm text-gray-500" data-i18n="about_ceo_role">المؤسسة والرئيسة التنفيذية</p></div>
+        <div class="relative flex justify-center lg:justify-end fade-up" style="animation-delay: 0.12s">
+          <div class="relative w-full max-w-md">
+            <div class="absolute -inset-5 rounded-[2rem] bg-gradient-to-br from-[#40E0D0]/55 via-teal-100/40 to-cyan-100/70 blur-2xl opacity-95"></div>
+            <div class="relative rounded-[2rem] border border-teal-100 bg-white p-8 shadow-2xl shadow-teal-900/10 hover-lift">
+              <div class="aspect-square rounded-2xl bg-gradient-to-br from-[#40E0D0]/25 via-emerald-50/90 to-cyan-50 flex flex-col items-center justify-center text-center p-6 ring-2 ring-[#40E0D0]/40 ring-offset-2 ring-offset-white">
+                <div class="h-24 w-24 rounded-full bg-white shadow-inner flex items-center justify-center mb-4 border-2 border-[#40E0D0]/50 shadow-[0_0_30px_rgba(64,224,208,0.35)]">
+                  <i class="fas fa-droplet text-4xl text-[#20b5a8]"></i>
+                </div>
+                <p class="font-bold text-[#0c2748] text-lg" data-i18n="card_routine_title">روتين ناعم كل يوم</p>
+                <p class="text-sm text-slate-600 mt-2 leading-relaxed" data-i18n="card_routine_sub">ترطيب · تنظيف لطيف · حماية يومية</p>
+                <div class="mt-6 flex gap-2">
+                  <span class="h-2 w-2 rounded-full bg-[#40E0D0] shadow-[0_0_8px_#40E0D0]"></span>
+                  <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
+                  <span class="h-2 w-2 rounded-full bg-cyan-400"></span>
+                </div>
+              </div>
+              <p class="text-center text-xs text-teal-700/70 mt-4 font-medium" data-i18n="card_demo">واجهة استعراض — بيانات تجريبية</p>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ===== 3. OUR SERVICES ===== -->
-    <section id="services" class="py-20 border-t border-gray-200/60">
-      <div class="text-center max-w-2xl mx-auto">
-        <h2 class="text-3xl md:text-4xl font-bold" data-i18n="services_title">خدمات موثوق</h2>
-        <p class="text-gray-500 mt-3" data-i18n="services_sub">نقدم أكثر من مجرد مسح QR</p>
-      </div>
-      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-16">
-        <div class="bg-white p-8 rounded-3xl shadow-md hover-lift text-center">
-          <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto text-blue-600 text-2xl"><i class="fas fa-check-double"></i></div>
-          <h3 class="font-bold text-xl mt-5" data-i18n="feat1_title">التحقق من الأصالة</h3>
-          <p class="text-gray-500 mt-3 text-sm" data-i18n="feat1">نتائج خلال ثوانٍ</p>
+    <section id="highlights" class="border-y border-teal-100/90 bg-white/65 backdrop-blur-sm py-16">
+      <div class="container mx-auto px-4 md:px-8">
+        <div class="text-center max-w-2xl mx-auto mb-12">
+          <h2 class="text-3xl md:text-4xl font-bold text-[#0c2748]" data-i18n="why_title">لماذا VURA؟</h2>
+          <p class="mt-3 text-slate-600" data-i18n="why_sub">منصة تجمع بين جمال التصميم وسهولة التصفح — مع مسار واضح للتحقق من أصالة ما تشتريه.</p>
         </div>
-        <div class="bg-white p-8 rounded-3xl shadow-md hover-lift text-center">
-          <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto text-emerald-600 text-2xl"><i class="fas fa-flask"></i></div>
-          <h3 class="font-bold text-xl mt-5" data-i18n="feat2_title">تحليل المكونات</h3>
-          <p class="text-gray-500 mt-3 text-sm" data-i18n="feat2">تقرير شامل عن المواد</p>
-        </div>
-        <div class="bg-white p-8 rounded-3xl shadow-md hover-lift text-center">
-          <div class="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto text-amber-600 text-2xl"><i class="fas fa-exclamation-triangle"></i></div>
-          <h3 class="font-bold text-xl mt-5" data-i18n="feat3_title">تنبيهات السلامة</h3>
-          <p class="text-gray-500 mt-3 text-sm" data-i18n="feat3">حساسية، مواد ضارة</p>
-        </div>
-        <div class="bg-white p-8 rounded-3xl shadow-md hover-lift text-center">
-          <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto text-purple-600 text-2xl"><i class="fas fa-info-circle"></i></div>
-          <h3 class="font-bold text-xl mt-5" data-i18n="feat4_title">معلومات موثقة</h3>
-          <p class="text-gray-500 mt-3 text-sm" data-i18n="feat4">قاعدة بيانات محدثة</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===== 4. HOW IT WORKS (detailed) ===== -->
-    <section id="how" class="py-20 border-t border-gray-200/60">
-      <div class="grid md:grid-cols-2 gap-12 items-center">
-        <div class="order-2 md:order-1">
-          <span class="text-blue-600 font-semibold" data-i18n="how_detail_badge">دليل الاستخدام</span>
-          <h2 class="text-3xl md:text-4xl font-bold mt-2" data-i18n="how_detail_title">آلية العمل خطوة بخطوة</h2>
-          <div class="mt-8 space-y-6">
-            <div class="flex gap-4"><span class="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold shrink-0">١</span><div><h4 class="font-bold text-lg" data-i18n="how_detail_step1_title">افتح scanner</h4><p class="text-gray-500" data-i18n="how_detail_step1">من الصفحة الرئيسية اضغط على زر "امسح منتجك".</p></div></div>
-            <div class="flex gap-4"><span class="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold shrink-0">٢</span><div><h4 class="font-bold text-lg" data-i18n="how_detail_step2_title">وجّه الكاميرا للرمز</h4><p class="text-gray-500" data-i18n="how_detail_step2">ضع رمز QR داخل الإطار – يعمل حتى في الإضاءة المنخفضة.</p></div></div>
-            <div class="flex gap-4"><span class="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold shrink-0">٣</span><div><h4 class="font-bold text-lg" data-i18n="how_detail_step3_title">التحقق الفوري</h4><p class="text-gray-500" data-i18n="how_detail_step3">يقوم نظام موثوق بمقارنة الرمز مع قاعدة بيانات المنتجات الأصلية.</p></div></div>
-            <div class="flex gap-4"><span class="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold shrink-0">٤</span><div><h4 class="font-bold text-lg" data-i18n="how_detail_step4_title">استعراض التفاصيل</h4><p class="text-gray-500" data-i18n="how_detail_step4">تظهر لك بطاقة المنتج: المكونات، المخاطر، تقييم السلامة.</p></div></div>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div class="rounded-2xl border border-teal-100 bg-gradient-to-b from-white to-teal-50/40 p-6 hover-lift">
+            <div class="h-12 w-12 rounded-xl bg-teal-100 flex items-center justify-center text-teal-700 text-xl mb-4"><i class="fas fa-gem"></i></div>
+            <h3 class="font-bold text-lg text-[#0c2748]" data-i18n="feat1_title">أصلية المنتج</h3>
+            <p class="text-sm text-slate-600 mt-2 leading-relaxed" data-i18n="feat1_body">اطمئن عبر مسح QR والاطلاع على معلومات موجزة عن المنتج.</p>
           </div>
-        </div>
-        <div class="order-1 md:order-2 flex justify-center">
-          <div class="bg-white p-6 rounded-3xl shadow-xl border max-w-sm">
-            <img src="https://placehold.co/600x400/f1f5f9/2563eb?text=QR+Scanner+Preview" alt="how to scan" class="rounded-2xl">
-            <p class="text-center text-sm text-gray-500 mt-3"><i class="fas fa-mobile-alt ml-1"></i> <span data-i18n="how_detail_caption">واجهة المسح الضوئي</span></p>
+          <div class="rounded-2xl border border-emerald-100 bg-gradient-to-b from-white to-emerald-50/35 p-6 hover-lift">
+            <div class="h-12 w-12 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-700 text-xl mb-4"><i class="fas fa-feather-alt"></i></div>
+            <h3 class="font-bold text-lg text-[#0c2748]" data-i18n="feat2_title">تجربة ناعمة</h3>
+            <p class="text-sm text-slate-600 mt-2 leading-relaxed" data-i18n="feat2_body">ألوان مستوحاة من الهوية وبطاقات منتجات واضحة على كل الشاشات.</p>
+          </div>
+          <div class="rounded-2xl border border-teal-100 bg-gradient-to-b from-white to-cyan-50/30 p-6 hover-lift">
+            <div class="h-12 w-12 rounded-xl bg-cyan-100 flex items-center justify-center text-cyan-800 text-xl mb-4"><i class="fas fa-hand-holding-heart"></i></div>
+            <h3 class="font-bold text-lg text-[#0c2748]" data-i18n="feat3_title">عناية بالبشرة والصحة</h3>
+            <p class="text-sm text-slate-600 mt-2 leading-relaxed" data-i18n="feat3_body">تركيز على التجميل والعناية اليومية والمنتجات الصحية الموثوقة.</p>
+          </div>
+          <div class="rounded-2xl border border-teal-100 bg-gradient-to-b from-white to-slate-50/80 p-6 hover-lift">
+            <div class="h-12 w-12 rounded-xl bg-slate-800 flex items-center justify-center text-teal-300 text-xl mb-4"><i class="fas fa-store-alt"></i></div>
+            <h3 class="font-bold text-lg text-[#0c2748]" data-i18n="feat4_title">للموزعين</h3>
+            <p class="text-sm text-slate-600 mt-2 leading-relaxed" data-i18n="feat4_body">لوحة تحكم تجريبية لإدارة العرض .</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ===== 5. CONTACT US ===== -->
-    <section id="contact" class="py-20 border-t border-gray-200/60">
-      <div class="grid md:grid-cols-2 gap-12">
-        <div>
-          <h2 class="text-3xl font-bold" data-i18n="contact_title">تواصل مع فريق موثوق</h2>
-          <p class="text-gray-500 mt-4" data-i18n="contact_sub">نحن هنا للإجابة عن استفساراتك، اقتراحاتك، أو للإبلاغ عن منتج.</p>
-          <div class="mt-10 space-y-4">
-            <div class="flex items-center gap-4 text-gray-600"><i class="fas fa-map-pin text-blue-500 w-6"></i> <span data-i18n="contact_address">غرداية، الجزائر</span></div>
-            <div class="flex items-center gap-4 text-gray-600"><i class="fas fa-phone-alt text-blue-500 w-6"></i> <span dir="ltr">+213 675 47 85 49</span></div>
-            <div class="flex items-center gap-4 text-gray-600"><i class="fas fa-envelope text-blue-500 w-6"></i> <span>hello@mawthooq.sa</span></div>
-            <div class="flex gap-5 mt-8 text-2xl text-gray-500">
-              <a href="#" class="hover:text-blue-600 transition"><i class="fab fa-x-twitter"></i></a>
-              <a href="#" class="hover:text-blue-600 transition"><i class="fab fa-linkedin-in"></i></a>
-              <a href="#" class="hover:text-blue-600 transition"><i class="fab fa-instagram"></i></a>
+    <section id="cta" class="py-16 md:py-20">
+      <div class="container mx-auto px-4 md:px-8">
+        <div class="rounded-[2rem] bg-gradient-to-l from-[#0c2748] via-teal-900 to-emerald-950 p-10 md:p-14 text-white text-center shadow-[0_28px_80px_-20px_rgba(64,224,208,0.45)] relative overflow-hidden ring-2 ring-[#40E0D0]/50">
+          <div class="absolute inset-0 opacity-35 bg-[radial-gradient(circle_at_22%_18%,#40E0D0,transparent_42%)]"></div>
+          <div class="absolute inset-0 opacity-22 bg-[radial-gradient(circle_at_78%_82%,#34d399,transparent_38%)]"></div>
+          <div class="absolute -top-20 -right-20 h-56 w-56 rounded-full bg-[#40E0D0]/20 blur-3xl"></div>
+          <div class="relative">
+            <h3 class="text-2xl md:text-3xl font-black" data-i18n="cta_title">ابدأ جولة التسوق أو تحقق من أصالة منتجك</h3>
+            <p class="mt-3 text-teal-100 max-w-xl mx-auto" data-i18n="cta_sub">كلاهما متاح بلمسة واحدة — تصميم واجهة فقط دون معالجة دفع أو مخزون حقيقي.</p>
+            <div class="mt-8 flex flex-wrap justify-center gap-4">
+              <a href="products.html" class="inline-flex items-center gap-2 rounded-full bg-white text-teal-800 px-8 py-3.5 font-bold shadow-lg hover:bg-teal-50 transition"><span data-i18n="cta_shop">تصفح المنتجات</span></a>
+              <a href="verify.html" class="inline-flex items-center gap-2 rounded-full border-2 border-teal-300/90 text-white px-8 py-3.5 font-bold hover:bg-white/10 transition"><span data-i18n="cta_qr">التحقق عبر QR</span></a>
             </div>
           </div>
         </div>
-        <!-- modern form -->
-        <div class="bg-white p-8 rounded-3xl shadow-lg border border-gray-100">
-          <form action="#" method="post" class="space-y-5">
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1" data-i18n="contact_name">الاسم الكامل</label>
-              <input type="text" data-i18n-placeholder="contact_placeholder_name" placeholder="مثال: سارة أحمد" class="w-full border border-gray-200 rounded-2xl p-4 focus:ring-2 focus:ring-blue-200 outline-none transition">
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1" data-i18n="contact_email">البريد الإلكتروني</label>
-              <input type="email" placeholder="sara@example.com" class="w-full border border-gray-200 rounded-2xl p-4 focus:ring-2 focus:ring-blue-200 outline-none transition">
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1" data-i18n="contact_message">الرسالة</label>
-              <textarea rows="4" data-i18n-placeholder="contact_placeholder_msg" placeholder="كيف يمكننا مساعدتك؟" class="w-full border border-gray-200 rounded-2xl p-4 focus:ring-2 focus:ring-blue-200 outline-none transition"></textarea>
-            </div>
-            <button type="submit" class="bg-blue-600 text-white w-full py-4 rounded-2xl text-lg font-semibold hover:bg-blue-700 transition shadow-lg" data-i18n="contact_send">إرسال الرسالة</button>
-          </form>
-        </div>
-      </div>
-    </section>
-
-    <!-- CTA section before footer -->
-    <section class="my-16 bg-gradient-to-l from-blue-600 to-indigo-700 text-white p-12 md:p-16 rounded-4xl shadow-2xl rounded-3xl">
-      <div class="text-center max-w-3xl mx-auto">
-        <h3 class="text-3xl md:text-4xl font-bold" data-i18n="cta_title">احمِ نفسك وعائلتك اليوم</h3>
-        <p class="text-blue-100 mt-4 text-lg" data-i18n="cta_sub">جرّب موثوق مجاناً، وامسح أي منتج لتعرف حقيقته.</p>
-        <a href="#scan" class="inline-block mt-8 bg-white text-blue-700 px-10 py-4 rounded-full text-xl font-bold shadow-2xl hover:bg-gray-100 transition" data-i18n="cta_btn">ابدأ المسح الآن</a>
-        <p class="text-sm text-blue-200 mt-6" data-i18n="cta_hint">لا تحتاج تحميل · يعمل مباشرة من المتصفح</p>
       </div>
     </section>
   </main>
 
-  <!-- ===== MODERN FOOTER ===== -->
-  <footer class="bg-white border-t border-gray-200 pt-16 pb-8">
-    <div class="container mx-auto px-5 md:px-8">
-      <div class="grid grid-cols-1 md:grid-cols-5 gap-10">
-        <div class="md:col-span-2">
-          <span class="text-3xl font-extrabold text-blue-600" data-i18n="brand_name">موثوق</span>
-          <p class="text-gray-500 mt-4 text-sm leading-relaxed" data-i18n="footer_tagline">منصة التحقق الذكية للمنتجات. نضمن لك أصالة وسلامة ما تستهلكه.</p>
-          <div class="flex gap-4 mt-6 text-xl">
-            <a href="#" class="text-gray-400 hover:text-blue-600"><i class="fab fa-x-twitter"></i></a>
-            <a href="#" class="text-gray-400 hover:text-blue-600"><i class="fab fa-linkedin-in"></i></a>
-            <a href="#" class="text-gray-400 hover:text-blue-600"><i class="fab fa-instagram"></i></a>
-          </div>
-        </div>
-        <div>
-          <h5 class="font-bold text-gray-900 mb-4" data-i18n="footer_company">الشركة</h5>
-          <ul class="space-y-2 text-gray-500 text-sm">
-            <li><a href="#about" class="hover:text-blue-600" data-i18n="nav_about">من نحن</a></li>
-            <li><a href="#services" class="hover:text-blue-600" data-i18n="nav_services">خدماتنا</a></li>
-            <li><a href="#contact" class="hover:text-blue-600" data-i18n="nav_contact">اتصل بنا</a></li>
-            <li><a href="#" class="hover:text-blue-600" data-i18n="footer_jobs">الوظائف</a></li>
-          </ul>
-        </div>
-        <div>
-          <h5 class="font-bold text-gray-900 mb-4" data-i18n="footer_support">الدعم</h5>
-          <ul class="space-y-2 text-gray-500 text-sm">
-            <li><a href="#" class="hover:text-blue-600" data-i18n="footer_faq">الأسئلة الشائعة</a></li>
-            <li><a href="#" class="hover:text-blue-600" data-i18n="footer_privacy">سياسة الخصوصية</a></li>
-            <li><a href="#" class="hover:text-blue-600" data-i18n="footer_terms">شروط الاستخدام</a></li>
-          </ul>
-        </div>
-        <div>
-          <h5 class="font-bold text-gray-900 mb-4" data-i18n="footer_download">التنزيل</h5>
-          <ul class="space-y-2 text-gray-500 text-sm">
-            <li><a href="#" class="hover:text-blue-600"><i class="fab fa-apple ml-1"></i> App Store</a></li>
-            <li><a href="#" class="hover:text-blue-600"><i class="fab fa-google-play ml-1"></i> Google Play</a></li>
-          </ul>
-        </div>
+  <footer class="border-t-2 border-[#40E0D0]/50 bg-white/95 backdrop-blur py-12 shadow-[0_-12px_40px_-24px_rgba(64,224,208,0.18)]">
+    <div class="container mx-auto px-4 md:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="text-center md:text-right">
+        <img src="logo.jpeg" alt="VURA" width="180" height="54" class="h-12 md:h-14 w-auto max-w-[220px] mx-auto md:mx-0 md:mr-auto object-contain object-center md:object-right" />
+        <p class="text-sm text-slate-600 mt-3 max-w-md mx-auto md:mx-0 md:mr-auto" data-i18n="footer_about">منصة لبيع منتجات التجميل والعناية بالبشرة والمنتجات الصحية الأصلية — واجهة تجريبية بدون خلفية برمجية.</p>
       </div>
-      <div class="border-t border-gray-100 mt-14 pt-6 text-center text-gray-400 text-sm">
-        <span data-i18n="footer_copyright">© 2025 موثوق - منصة التوثيق الذكية. جميع الحقوق محفوظة.</span>
+      <div class="flex gap-6 text-sm font-semibold text-slate-700">
+        <a href="products.html" class="hover:text-teal-700 transition"><span data-i18n="footer_products">المنتجات</span></a>
+        <a href="verify.html" class="hover:text-teal-700 transition"><span data-i18n="footer_verify">التحقق</span></a>
+        <a href="login.html" class="hover:text-teal-700 transition"><span data-i18n="footer_distributors">الموزعون</span></a>
       </div>
+      <p class="text-xs text-teal-700/70" data-i18n="footer_rights">© 2026 VURA — جميع الحقوق محفوظة.</p>
     </div>
   </footer>
 
-  <!-- تطبيق اللغة عند التحميل وأزرار التبديل -->
+  <script src="vura-i18n.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      var lang = window.MAWTHOOQ_LANG || 'ar';
-      if (typeof mawthooqApplyLang === 'function') mawthooqApplyLang(lang);
-      function setActiveLangBtn() {
-        var L = window.MAWTHOOQ_LANG || 'ar';
-        document.querySelectorAll('.lang-btn').forEach(function(btn) {
-          btn.classList.toggle('active', btn.getAttribute('data-lang') === L);
-        });
-      }
-      setActiveLangBtn();
-      document.querySelectorAll('.lang-btn').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-          var l = this.getAttribute('data-lang');
-          if (l && typeof mawthooqApplyLang === 'function') {
-            mawthooqApplyLang(l);
-            setActiveLangBtn();
-          }
+    document.addEventListener('DOMContentLoaded', function () {
+      window.vuraInitI18n();
+      document.getElementById('menuBtn').addEventListener('click', function () {
+        document.getElementById('mobileMenu').classList.toggle('hidden');
+      });
+      document.querySelectorAll('#mobileMenu a').forEach(function (link) {
+        link.addEventListener('click', function () {
+          document.getElementById('mobileMenu').classList.add('hidden');
         });
       });
-
-      // خطط الاشتراك: عرض مرة واحدة فقط قبل أول مسح
-      var plansModal = document.getElementById('plans-modal');
-      var plansCloseBtn = document.getElementById('plans-close-btn');
-      var plansContinueBtn = document.getElementById('plans-continue-btn');
-
-      function openPlansModal() {
-        if (!plansModal) return;
-        plansModal.classList.remove('hidden');
-        plansModal.classList.add('flex');
-        document.body.classList.add('overflow-hidden');
-      }
-
-      function closePlansModalAndGoToScan() {
-        if (plansModal) {
-          plansModal.classList.add('hidden');
-          plansModal.classList.remove('flex');
-        }
-        document.body.classList.remove('overflow-hidden');
-        try {
-          localStorage.setItem('mawthooq_plans_shown', '1');
-        } catch (e) {}
-        var target = document.querySelector('#scan');
-        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-
-      document.querySelectorAll('.scan-trigger').forEach(function(el) {
-        el.addEventListener('click', function(e) {
-          var alreadyShown = false;
-          try { alreadyShown = !!localStorage.getItem('mawthooq_plans_shown'); } catch (err) { alreadyShown = false; }
-          if (!alreadyShown) {
+      document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
+        anchor.addEventListener('click', function (e) {
+          var id = this.getAttribute('href');
+          if (id.length > 1 && document.querySelector(id)) {
             e.preventDefault();
-            openPlansModal();
+            document.querySelector(id).scrollIntoView({ behavior: 'smooth', block: 'start' });
           }
         });
-      });
-
-      if (plansCloseBtn) {
-        plansCloseBtn.addEventListener('click', function() {
-          if (plansModal) {
-            plansModal.classList.add('hidden');
-            plansModal.classList.remove('flex');
-          }
-          document.body.classList.remove('overflow-hidden');
-        });
-      }
-      if (plansContinueBtn) {
-        plansContinueBtn.addEventListener('click', function() {
-          closePlansModalAndGoToScan();
-        });
-      }
-      document.querySelectorAll('.plan-select-btn').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-          // يمكن لاحقاً تخزين نوع الخطة المختارة إذا احتجنا
-          closePlansModalAndGoToScan();
-        });
-      });
-    });
-  </script>
-  <!-- قاعدة بيانات المنتجات (يمكنك تعديل products.js) -->
-  <script src="products.js"></script>
-  <!-- jsQR: يعمل بشكل موثوق على iPhone و Safari -->
-  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
-  <!-- ZXing: لقراءة QR و barcodes (مثل EAN-13) -->
-  <script src="https://unpkg.com/@zxing/library@0.20.0"></script>
-  <script>
-    (function() {
-      'use strict';
-      if (typeof window.MAWTHOOQ_PRODUCTS === 'undefined') window.MAWTHOOQ_PRODUCTS = {};
-      var QRFY_TOUCHE = { id: 'ttyrz4Qa0Z', nameAr: 'كريم مرطّب للوجه', nameFr: 'Crème hydratante visage', brand: 'Touché Skincare Lab', category: 'تجميلي', status: 'original', image: 'https://placehold.co/400x300/f1f5f9/2563eb?text=Touch%C3%A9+Creme', description: 'كريم مرطّب يومي للوجه من Touché Skincare Lab. مناسب للبشرة الحساسة.', ingredients: 'ماء، غليسيرين، زيت اللوز، فيتامين E، خلاصة الصبار.', warnings: 'للاستخدام الخارجي فقط. تجنب منطقة العين.', instructions: 'ضع كمية صغيرة على الوجه والرقبة بعد التنظيف. دَلّك برفق حتى الامتصاص. يُنصح بالاستخدام صباحاً ومساءً.', productUrl: 'https://qrfy.io/ttyrz4Qa0Z', usageTimes: 'صباحاً ومساءً، مرة أو مرتين يومياً بعد التنظيف.', risks: 'نادراً قد يسبب تهيّجاً خفيفاً للبشرة الحساسة جداً. في حال استمرار الاحمرار أو الحكة أوقف الاستخدام واستشر الطبيب.', storage: 'يحفظ في مكان جاف ومعتدل الحرارة، بعيداً عن أشعة الشمس المباشرة.', expiryAfterOpen: 'يفضّل استخدامه خلال 6 أشهر من فتح العبوة (PAO).', skinTypes: 'جميع أنواع البشرة، خصوصاً الجافة والعادية والحساسة.', volume: '50 مل', contraindications: 'لا يُنصح به في حال التحسس من أي من المكونات. تجنب منطقة العين.', benefits: 'ترطيب عميق، حماية حاجز البشرة، ملمس غير لزج، خالٍ من العطور الصناعية.', guidance: 'رغم أن المنتج أصلي، يفضل دائماً دعم روتينك ببدائل طبيعية مثل جل الألوفيرا النقي أو الزيوت النباتية الخفيفة المناسبة لنوع بشرتك.', alternativeProduct: { name: 'بديل عشبي مقترح: جل ألوفيرا نقي + ماء ورد', image: 'https://placehold.co/200x200/e6fffa/0f766e?text=Herbal+Alternative', note: 'بديل طبيعي للترطيب اليومي: امزج جل الألوفيرا النقي مع قطرات من ماء الورد، وجرّب على جزء صغير من البشرة أولاً.' } };
-
-      var lastDecodedAt = 0;
-      var DECODE_COOLDOWN_MS = 2500;
-      var scanStream = null;
-      var scanRaf = null;
-      var isScanning = false;
-      var resultDisplayed = false;
-
-      var videoEl = document.getElementById('qr-video');
-      var canvasEl = document.getElementById('qr-canvas');
-      var resultEl = document.getElementById('scan-result');
-      var resultProductEl = document.getElementById('scan-result-product');
-      var resultRawEl = document.getElementById('scan-result-raw');
-      var lastDisplayedProduct = null;
-      var resultText = document.getElementById('scan-result-text');
-      var scanAgainBtn = document.getElementById('scan-again-btn');
-      var errorEl = document.getElementById('scan-error');
-      var errorMsgEl = document.getElementById('scan-error-msg');
-      var scanStatusEl = document.getElementById('scan-status');
-
-      function getProductFromDecodedText(decodedText) {
-        var t = (decodedText || '').trim().replace(/\s+/g, ' ');
-        if (!t) return null;
-        var db = window.MAWTHOOQ_PRODUCTS || {};
-        if (db[t]) return db[t];
-        var tNoSlash = t.replace(/\/+$/, '');
-        if (db[tNoSlash]) return db[tNoSlash];
-        if (t.indexOf('qrfy.io/ttyrz4Qa0Z') >= 0) return (db['ttyrz4Qa0Z'] || db['https://qrfy.io/ttyrz4Qa0Z'] || QRFY_TOUCHE);
-        if (t.indexOf('facebook.com/sarl.elker') >= 0 || t.indexOf('www.facebook.com/sarl.elker') >= 0)
-          return (db[t] || db[tNoSlash] || db['https://www.facebook.com/sarl.elker'] || db['https://facebook.com/sarl.elker']);
-        try {
-          var url = t.indexOf('http') === 0 ? t : 'https://x.com/?' + t;
-          var u = new URL(url);
-          var productId = u.searchParams.get('product') || u.searchParams.get('id');
-          if (productId && db[productId]) return db[productId];
-          if (u.hostname && u.hostname.indexOf('qrfy.io') >= 0 && u.pathname) {
-            var code = u.pathname.replace(/^\/+|\/+$/g, '');
-            if (code && db[code]) return db[code];
-          }
-        } catch (e) {}
-        return null;
-      }
-
-      function section(title, icon, content, bgClass) {
-        if (!content) return '';
-        var bg = bgClass || 'bg-gray-50';
-        return '<div class="' + bg + ' rounded-xl p-4 mt-3 border border-gray-100"><p class="text-sm font-semibold text-gray-800 mb-2">' + icon + ' ' + title + '</p><p class="text-gray-700 text-sm leading-relaxed">' + content + '</p></div>';
-      }
-      function renderProductCard(p) {
-        var L = window.MAWTHOOQ_LANG || 'ar';
-        var T = (window.MAWTHOOQ_T && window.MAWTHOOQ_T[L]) ? window.MAWTHOOQ_T[L] : window.MAWTHOOQ_T.ar;
-        var name = (L === 'ar' && p.nameAr) ? p.nameAr : (L === 'fr' && p.nameFr) ? p.nameFr : (p.name || p.nameEn || p.nameAr || p.nameFr || p.id);
-        var brand = p.brand ? '<p class="text-gray-500 text-sm mt-1">' + p.brand + '</p>' : '';
-        var statusClass = (p.status === 'original') ? 'bg-green-100 text-green-700' : (p.status === 'not_original') ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700';
-        var statusText = (p.status === 'original') ? (T.product_original || '✔ أصلي') : (p.status === 'not_original') ? (T.product_not_original || 'غير أصلي') : (T.product_unknown || 'غير معروف');
-        var img = p.image ? '<img src="' + p.image + '" alt="" class="w-full h-52 object-cover rounded-t-2xl">' : '';
-        var desc = p.description ? '<p class="text-gray-600 leading-relaxed text-sm">' + p.description + '</p>' : '';
-        var ing = p.ingredients ? section(T.product_ingredients || 'المكونات', '<i class="fas fa-flask text-blue-500"></i>', p.ingredients) : '';
-        var warn = p.warnings ? section(T.product_warnings || 'تحذيرات', '<i class="fas fa-exclamation-triangle text-amber-500"></i>', p.warnings, 'bg-amber-50') : '';
-        var batch = p.batch ? '<p class="text-gray-500 text-xs mt-2" dir="ltr">' + (T.batch_label || 'رقم الدفعة') + ': ' + p.batch + '</p>' : '';
-        var instructions = p.instructions ? section(T.product_instructions || 'تعليمات الاستخدام', '<i class="fas fa-list-ol text-blue-500"></i>', p.instructions, 'bg-blue-50') : '';
-        var usageTimes = p.usageTimes ? section(T.product_usage_times || 'أوقات الاستعمال', '<i class="fas fa-clock text-indigo-500"></i>', p.usageTimes) : '';
-        var risks = p.risks ? section(T.product_risks || 'مخاطر محتملة', '<i class="fas fa-shield-alt text-red-500"></i>', p.risks, 'bg-red-50') : '';
-        var storage = p.storage ? section(T.product_storage || 'طريقة التخزين', '<i class="fas fa-box-open text-gray-600"></i>', p.storage) : '';
-        var expiry = p.expiryAfterOpen ? section(T.product_expiry || 'الصلاحية بعد الفتح', '<i class="fas fa-calendar-check text-emerald-600"></i>', p.expiryAfterOpen) : '';
-        var skinTypes = p.skinTypes ? section(T.product_skin_types || 'أنواع البشرة المناسبة', '<i class="fas fa-hand-sparkles text-pink-500"></i>', p.skinTypes) : '';
-        var volLabel = T.product_volume || 'الحجم';
-        var volume = p.volume ? '<p class="text-sm text-gray-600 mt-2"><i class="fas fa-weight-hanging text-gray-400 ml-1"></i> ' + volLabel + ': ' + p.volume + '</p>' : '';
-        var contraindications = p.contraindications ? section(T.product_contraindications || 'موانع الاستخدام', '<i class="fas fa-ban text-red-600"></i>', p.contraindications, 'bg-red-50') : '';
-        var benefits = p.benefits ? section(T.product_benefits || 'الفوائد', '<i class="fas fa-check-circle text-green-600"></i>', p.benefits, 'bg-green-50') : '';
-        var benefitsNote = p.benefitsNote ? section(T.product_alert || 'تنبيه', '<i class="fas fa-info-circle text-amber-600"></i>', p.benefitsNote, 'bg-amber-50') : '';
-        var guidance = p.guidance ? section(T.product_tips || 'نصائح وإرشادات', '<i class="fas fa-lightbulb text-sky-600"></i>', p.guidance, 'bg-sky-50') : '';
-        var alternative = '';
-        if (p.alternativeProduct && (p.alternativeProduct.name || p.alternativeProduct.image || p.alternativeProduct.note)) {
-          var altName = p.alternativeProduct.name ? '<p class="font-bold text-gray-900">' + p.alternativeProduct.name + '</p>' : '';
-          var altNote = p.alternativeProduct.note ? '<p class="text-sm text-gray-600 mt-1">' + p.alternativeProduct.note + '</p>' : '';
-          var altImg = p.alternativeProduct.image ? '<img src="' + p.alternativeProduct.image + '" alt="" class="w-16 h-16 object-cover rounded-xl border border-gray-200">' : '';
-          alternative = '<div class="bg-emerald-50 rounded-xl p-4 mt-3 border border-emerald-100">' +
-            '<p class="text-sm font-semibold text-emerald-800 mb-2"><i class="fas fa-star text-emerald-600"></i> ' + (T.product_alternative || 'منتج بديل أصلي مقترح') + '</p>' +
-            '<div class="flex items-start gap-3">' + altImg + '<div>' + altName + altNote + '</div></div>' +
-            '</div>';
-        }
-        var statusLabel = T.product_status || 'حالة المنتج';
-        var descLabel = T.product_description || 'الوصف';
-        return '<div class="product-detail-card rounded-2xl overflow-hidden border border-gray-100 shadow-lg">' + img +
-          '<div class="p-5">' +
-          '<div class="flex justify-between items-start flex-wrap gap-2">' +
-          '<h2 class="text-xl font-bold text-gray-900">' + name + '</h2>' +
-          '<span class="' + statusClass + ' px-4 py-2 rounded-full text-sm font-semibold">' + statusText + '</span>' +
-          '</div>' +
-          '<p class="text-xs font-medium text-gray-500 mt-1">' + statusLabel + '</p>' +
-          brand + volume + batch +
-          '<div class="mt-4"><p class="text-xs font-semibold text-gray-500 mb-1">' + descLabel + '</p>' + desc + '</div>' +
-          benefits + benefitsNote + guidance + alternative + usageTimes + instructions + ing + skinTypes + expiry + storage + contraindications + risks + warn +
-          '</div></div>';
-      }
-
-      function onScanSuccess(decodedText) {
-        if (!decodedText || !decodedText.trim()) return;
-        var now = Date.now();
-        if (now - lastDecodedAt < DECODE_COOLDOWN_MS) return;
-        lastDecodedAt = now;
-
-        console.log('[Mawthooq QR] Decoded:', decodedText);
-        stopScanner();
-        resultDisplayed = true;
-
-        if (scanStatusEl) scanStatusEl.style.display = 'none';
-        resultEl.classList.remove('hidden');
-        errorEl.classList.add('hidden');
-
-        var product = getProductFromDecodedText(decodedText);
-        if (product) {
-          lastDisplayedProduct = product;
-          resultProductEl.innerHTML = renderProductCard(product);
-          resultProductEl.classList.remove('hidden');
-          resultRawEl.classList.add('hidden');
-        } else {
-          lastDisplayedProduct = null;
-          resultText.textContent = decodedText;
-          resultRawEl.classList.remove('hidden');
-          resultProductEl.classList.add('hidden');
-        }
-      }
-
-      function showError(code) {
-        var L = window.MAWTHOOQ_LANG || 'ar';
-        var T = (window.MAWTHOOQ_T && window.MAWTHOOQ_T[L]) ? window.MAWTHOOQ_T[L] : window.MAWTHOOQ_T.ar;
-        var msg;
-        switch (code) {
-          case 'no_camera_support':
-            msg = T.scan_err_no_camera_support; break;
-          case 'libs_not_loaded':
-            msg = T.scan_err_libs_not_loaded; break;
-          case 'video_failed':
-            msg = T.scan_err_video_failed; break;
-          case 'camera_permission_denied':
-            msg = T.scan_err_permission_denied; break;
-          case 'camera_not_found':
-            msg = T.scan_err_camera_not_found; break;
-          case 'camera_unreachable':
-            msg = T.scan_err_camera_unreachable; break;
-          default:
-            msg = T.scan_err_generic;
-        }
-        if (errorMsgEl) errorMsgEl.textContent = msg;
-        errorEl.classList.remove('hidden');
-        if (scanStatusEl) scanStatusEl.style.display = 'none';
-        stopScanner();
-      }
-
-      function setScanningStatus(show) {
-        if (scanStatusEl) scanStatusEl.style.display = show ? 'block' : 'none';
-      }
-
-      var zxReader = null;
-
-      function decodeWithZXing(imageData, w, h) {
-        if (!window.ZXing || !imageData) return null;
-        try {
-          if (!zxReader) {
-            zxReader = new ZXing.MultiFormatReader();
-            var hints = new Map();
-            hints.set(ZXing.DecodeHintType.POSSIBLE_FORMATS, [
-              ZXing.BarcodeFormat.QR_CODE,
-              ZXing.BarcodeFormat.EAN_13,
-              ZXing.BarcodeFormat.EAN_8,
-              ZXing.BarcodeFormat.CODE_128
-            ]);
-            zxReader.setHints(hints);
-          }
-          // تحويل بيانات RGBA إلى Int32Array كما يتوقع ZXing
-          var len = w * h;
-          var pixels = new Int32Array(len);
-          var data = imageData.data;
-          for (var i = 0, j = 0; i < len; i++, j += 4) {
-            var r = data[j];
-            var g = data[j + 1];
-            var b = data[j + 2];
-            var a = data[j + 3];
-            pixels[i] = (r << 24) | (g << 16) | (b << 8) | a;
-          }
-          var luminanceSource = new ZXing.RGBLuminanceSource(pixels, w, h);
-          var binaryBitmap = new ZXing.BinaryBitmap(new ZXing.HybridBinarizer(luminanceSource));
-          var result = zxReader.decode(binaryBitmap);
-          return result && result.getText ? result.getText() : null;
-        } catch (e) {
-          return null;
-        }
-      }
-
-      function tick() {
-        if (!isScanning || !videoEl || videoEl.readyState !== videoEl.HAVE_ENOUGH_DATA) {
-          scanRaf = requestAnimationFrame(tick);
-          return;
-        }
-        var w = videoEl.videoWidth;
-        var h = videoEl.videoHeight;
-        if (!w || !h) {
-          scanRaf = requestAnimationFrame(tick);
-          return;
-        }
-        canvasEl.width = w;
-        canvasEl.height = h;
-        var ctx = canvasEl.getContext('2d');
-        if (!ctx) {
-          scanRaf = requestAnimationFrame(tick);
-          return;
-        }
-        ctx.drawImage(videoEl, 0, 0);
-        var imageData = ctx.getImageData(0, 0, w, h);
-        var decoded = null;
-        if (window.jsQR) {
-          var code = window.jsQR(imageData.data, w, h, { inversionAttempts: 'attemptBoth' });
-          if (code && code.data) decoded = code.data;
-        }
-        if (!decoded) {
-          decoded = decodeWithZXing(imageData, w, h);
-        }
-        if (decoded) onScanSuccess(decoded);
-        scanRaf = requestAnimationFrame(tick);
-      }
-
-      function stopScanner() {
-        isScanning = false;
-        if (scanRaf) {
-          cancelAnimationFrame(scanRaf);
-          scanRaf = null;
-        }
-        if (scanStream && scanStream.getTracks) {
-          scanStream.getTracks().forEach(function(t) { t.stop(); });
-          scanStream = null;
-        }
-        if (videoEl && videoEl.srcObject) {
-          videoEl.srcObject = null;
-        }
-        setScanningStatus(false);
-      }
-
-      function startScanner() {
-        if (isScanning) return;
-        resultEl.classList.add('hidden');
-        errorEl.classList.add('hidden');
-        setScanningStatus(true);
-
-        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-          showError('no_camera_support');
-          return;
-        }
-        if (!window.jsQR && !window.ZXing) {
-          showError('libs_not_loaded');
-          return;
-        }
-
-        var constraints = {
-          video: {
-            facingMode: 'environment',
-            width: { ideal: 1280 },
-            height: { ideal: 720 }
-          },
-          audio: false
-        };
-
-        navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
-          scanStream = stream;
-          videoEl.srcObject = stream;
-          videoEl.setAttribute('playsinline', true);
-          videoEl.play().then(function() {
-            isScanning = true;
-            tick();
-          }).catch(function(err) {
-            showError('video_failed');
-            stopScanner();
-          });
-        }).catch(function(err) {
-          var msg = (err && err.message) || '';
-          if (msg.indexOf('Permission') >= 0 || msg.indexOf('NotAllowed') >= 0)
-            showError('camera_permission_denied');
-          else if (msg.indexOf('NotFound') >= 0)
-            showError('camera_not_found');
-          else
-            showError('camera_unreachable');
-          stopScanner();
-        });
-      }
-
-      scanAgainBtn.addEventListener('click', function() {
-        resultDisplayed = false;
-        resultEl.classList.add('hidden');
-        startScanner();
-      });
-
-
-      var scanSection = document.getElementById('scan');
-      var observer = new IntersectionObserver(function(entries) {
-        entries.forEach(function(entry) {
-          if (entry.isIntersecting) {
-            if (!resultDisplayed) setTimeout(startScanner, 200);
-          } else {
-            stopScanner();
-          }
-        });
-      }, { threshold: 0.25 });
-      observer.observe(scanSection);
-
-      window.mawthooqOnLangChange = function() {
-        if (lastDisplayedProduct && resultProductEl && !resultProductEl.classList.contains('hidden')) {
-          resultProductEl.innerHTML = renderProductCard(lastDisplayedProduct);
-        }
-      };
-
-      if (window.location.hash === '#scan') setTimeout(startScanner, 400);
-    })();
-  </script>
-
-  <!-- tiny JavaScript for mobile menu toggle -->
-  <script>
-    const menuBtn = document.getElementById('menuBtn');
-    const mobileMenu = document.getElementById('mobileMenu');
-    menuBtn.addEventListener('click', () => {
-      mobileMenu.classList.toggle('hidden');
-    });
-
-    // optional: close menu when clicking a link (improves UX)
-    document.querySelectorAll('#mobileMenu a').forEach(link => {
-      link.addEventListener('click', () => {
-        mobileMenu.classList.add('hidden');
-      });
-    });
-  </script>
-
-  <!-- smooth scroll for anchor links (optional) -->
-  <script>
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
     });
   </script>

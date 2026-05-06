@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VURA — التحقق</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * { font-family: 'Cairo', sans-serif; }
+    body { background: linear-gradient(180deg, #ecfffc 0%, #ffffff 48%, #dffaf7 100%); min-height: 100vh; }
+    .scanner-frame {
+      position: relative;
+      aspect-ratio: 4/3;
+      border-radius: 1.5rem;
+      overflow: hidden;
+      background: linear-gradient(145deg, #0c1929 0%, #115e59 32%, #149e92 55%, #40E0D0 100%);
+      box-shadow: inset 0 0 100px rgba(64, 224, 208, 0.22), 0 28px 56px -14px rgba(64, 224, 208, 0.42);
+    }
+    .fake-camera-feed {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 40%, rgba(64, 224, 208, 0.35), transparent 55%),
+        radial-gradient(circle at 20% 80%, rgba(64, 224, 208, 0.18), transparent 40%),
+        repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.03) 2px, rgba(255,255,255,0.03) 4px);
+      animation: grain 0.15s steps(2) infinite;
+    }
+    @keyframes grain {
+      0%, 100% { opacity: 1; transform: translate(0,0); }
+      50% { opacity: 0.97; transform: translate(-1px, 1px); }
+    }
+    .corner {
+      position: absolute;
+      width: 48px;
+      height: 48px;
+      border: 4px solid rgba(64, 224, 208, 0.95);
+      border-radius: 4px;
+      pointer-events: none;
+    }
+    .corner-tl { top: 12%; left: 14%; border-right: none; border-bottom: none; }
+    .corner-tr { top: 12%; right: 14%; border-left: none; border-bottom: none; }
+    .corner-bl { bottom: 18%; left: 14%; border-right: none; border-top: none; }
+    .corner-br { bottom: 18%; right: 14%; border-left: none; border-top: none; }
+    .scan-beam {
+      position: absolute;
+      left: 12%;
+      right: 12%;
+      height: 4px;
+      background: linear-gradient(90deg, transparent, rgba(64, 224, 208, 1), rgba(165, 243, 252, 0.98), rgba(64, 224, 208, 0.92), transparent);
+      box-shadow: 0 0 32px rgba(64, 224, 208, 0.85);
+      animation: beamMove 2.8s ease-in-out infinite;
+    }
+    @keyframes beamMove {
+      0%, 100% { top: 22%; opacity: 0.85; }
+      50% { top: 72%; opacity: 1; }
+    }
+    .rec-dot { animation: blink 1.2s ease-in-out infinite; }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.35; }
+    }
+  </style>
+</head>
+<body class="text-slate-900 antialiased" data-vura-meta="meta_title_verify">
+
+  <nav class="sticky top-0 z-40 border-b-2 border-[#40E0D0] bg-white/92 backdrop-blur-md shadow-[0_10px_40px_-16px_rgba(64,224,208,0.4)]">
+    <div class="container mx-auto px-4 md:px-8 py-3.5 flex items-center justify-between">
+      <a href="index.html" class="flex items-center shrink-0" data-i18n-aria="aria_home">
+        <img src="logo.jpeg" alt="VURA" width="150" height="45" class="h-10 md:h-11 w-auto max-w-[min(190px,48vw)] object-contain object-right" />
+      </a>
+      <div class="flex flex-wrap items-center justify-end gap-2 sm:gap-3">
+        <div class="hidden sm:flex items-center rounded-full border border-teal-200 bg-white p-0.5 gap-0.5 shadow-sm me-1" role="group" data-i18n-aria="lang_group_aria">
+          <button type="button" class="vura-lang-btn px-2 py-1 rounded-full text-xs font-bold text-slate-600 hover:bg-teal-50" data-vura-lang="ar">AR</button>
+          <button type="button" class="vura-lang-btn px-2 py-1 rounded-full text-xs font-bold text-slate-600 hover:bg-teal-50" data-vura-lang="fr">FR</button>
+          <button type="button" class="vura-lang-btn px-2 py-1 rounded-full text-xs font-bold text-slate-600 hover:bg-teal-50" data-vura-lang="en">EN</button>
+        </div>
+        <a href="index.html" class="text-sm font-bold text-teal-800 hover:text-teal-600 px-1"><span data-i18n="nav_home">الرئيسية</span></a>
+        <a href="products.html" class="text-sm font-bold text-slate-800 hover:text-teal-700 px-1"><span data-i18n="nav_products">المنتجات</span></a>
+        <a href="login.html" class="text-sm font-bold text-slate-800 hover:text-teal-700 hidden sm:inline px-1"><span data-i18n="nav_distributor">تسجيل دخول الموزع</span></a>
+        <a href="verify.html" aria-current="page" class="inline-flex items-center gap-2 rounded-full border-2 border-[#40E0D0] bg-[#40E0D0]/25 px-3 py-2 text-xs sm:text-sm font-bold text-[#0c2748] shadow-[0_8px_28px_-8px_rgba(64,224,208,0.45)]">
+          <i class="fas fa-qrcode"></i>
+          <span class="hidden sm:inline" data-i18n="nav_verify_long">التحقق من المنتجات الأصلية</span>
+          <span class="sm:hidden" data-i18n="nav_verify_short">تحقق الأصالة</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container mx-auto px-4 md:px-8 py-12 md:py-16 max-w-lg">
+    <div class="text-center mb-8">
+      <span class="inline-flex items-center gap-2 rounded-full bg-white border border-teal-200 px-4 py-1 text-xs font-bold text-teal-800 shadow-sm">
+        <i class="fas fa-camera"></i> <span data-i18n="verify_badge">محاكاة الماسح</span>
+      </span>
+      <h1 class="mt-4 text-3xl md:text-4xl font-black text-[#0c2748]" data-i18n="verify_title">التحقق من الأصالة</h1>
+      <p class="mt-4 text-lg text-slate-700 font-semibold leading-relaxed" data-i18n="verify_lead">قم بمسح رمز QR للتحقق من أصالة المنتج</p>
+      <p class="mt-2 text-sm text-teal-800/75" data-i18n="verify_note">هذه شاشة وهمية للعرض — لا يتم استخدام كاميرا حقيقية هنا.</p>
+    </div>
+
+    <div class="scanner-frame ring-2 ring-[#40E0D0] shadow-[0_0_0_3px_rgba(64,224,208,0.25),0_28px_56px_-14px_rgba(64,224,208,0.35)]">
+      <div class="fake-camera-feed"></div>
+      <div class="absolute top-4 left-4 right-4 flex justify-between items-center text-white/90 text-xs font-bold z-10">
+        <span class="flex items-center gap-2"><span class="rec-dot h-2 w-2 rounded-full bg-[#40E0D0] shadow-[0_0_10px_#40E0D0]"></span> LIVE PREVIEW</span>
+        <span><i class="fas fa-battery-three-quarters ml-1"></i> 100%</span>
+      </div>
+      <div class="corner corner-tl"></div>
+      <div class="corner corner-tr"></div>
+      <div class="corner corner-bl"></div>
+      <div class="corner corner-br"></div>
+      <div class="scan-beam"></div>
+      <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <div class="text-center px-6">
+          <div class="mx-auto h-16 w-16 rounded-2xl bg-white/10 backdrop-blur flex items-center justify-center border-2 border-[#40E0D0]/45 mb-3 shadow-[0_0_28px_rgba(64,224,208,0.35)]">
+            <i class="fas fa-qrcode text-3xl text-[#40E0D0]"></i>
+          </div>
+          <p class="text-white/75 text-sm font-medium" data-i18n="verify_align">محاذاة الرمز داخل الإطار</p>
+        </div>
+      </div>
+      <div class="absolute bottom-0 inset-x-0 py-3 bg-black/45 backdrop-blur-sm text-center text-white text-sm font-semibold z-10">
+        <span data-i18n="verify_ready">جاهز للمسح… (عرض تجريبي)</span>
+      </div>
+    </div>
+
+    <div class="mt-8 rounded-2xl border border-teal-100 bg-white p-6 shadow-lg shadow-teal-900/5">
+      <p class="text-sm text-slate-600 leading-relaxed text-center" data-i18n="verify_info">في النسخة الكاملة للمنصة، ستُفتح الكاميرا أو يُرفع صورة للرمز. هنا نعرض واجهة الماسح فقط وفق طلب التصميم.</p>
+      <a href="products.html" class="mt-5 flex items-center justify-center gap-2 w-full rounded-full bg-gradient-to-l from-[#40E0D0] via-teal-600 to-emerald-800 text-[#082032] font-bold py-3.5 hover:brightness-[1.05] transition shadow-[0_14px_40px_-10px_rgba(64,224,208,0.48)]">
+        <i class="fas fa-arrow-right"></i>
+        <span data-i18n="verify_back_products">العودة إلى المنتجات</span>
+      </a>
+    </div>
+  </main>
+
+  <footer class="py-8 text-center text-xs text-teal-800/70">
+    <span data-i18n="verify_footer">© VURA — التحقق من الأصالة (واجهة تجريبية)</span>
+  </footer>
+
+  <script src="vura-i18n.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      window.vuraInitI18n();
+    });
+  </script>
+</body>
+</html>
